@@ -1,3 +1,38 @@
 <resources>
     <string name="app_name">Traveling</string>
+
+    <string name="create_account">Create an account</string>
+    <string name="signup_instruction">Enter your email to sign up for this app</string>
+
+    <string name="email_hint">email@domain.com</string>
+
+    <string name="continue_btn">Continue</string>
+    <string name="continue_guest">Continue as Guest</string>
+
+    <string name="continue_google">Continue with Google</string>
+    <string name="continue_apple">Continue with Apple</string>
+
+    <string name="or">or</string>
+
+    <string name="terms_text">
+        By clicking continue, you agree to our Terms of
+        Service and Privacy Policy.
+    </string>
+
+    <string name="welcome_back">Welcome back!</string>
+    <string name="enter_password">Enter your password to continue</string>
+
+    <string name="password_hint">Password</string>
+    <string name="create_pswd">Create a password</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="choose_password">Choose a strong password for your account</string>
+
+    <string name="back">Back</string>
+
+    <string name="search_hint">Search locations, themes, or authors...</string>
+    <string name="nature">NATURE</string>
+    <string name="city">CITY</string>
+    <string name="museum">MUSEUM</string>
+    <string name="shop">SHOPS</string>
+    <string name="around_me">AROUND ME</string>
 </resources>
