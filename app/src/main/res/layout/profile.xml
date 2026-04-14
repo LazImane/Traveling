@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bck"
+    android:padding="24dp">
+
+    <!-- header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="32dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_back"
+            android:background="?attr/selectableItemBackgroundBorderless" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/myProfile"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="36dp"
+            android:layout_height="36dp" />
+
+    </LinearLayout>
+
+    <!-- pfp -->
+    <FrameLayout
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="32dp">
+
+        <ImageView
+            android:id="@+id/ivProfilePic"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_guest_avatar"
+            android:scaleType="centerCrop"
+            android:background="@drawable/btn_outline" />
+
+        <ImageButton
+            android:id="@+id/btnEditPicture"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="bottom|end"
+            android:src="@drawable/ic_edit"
+            android:background="@drawable/btn_orange"
+            android:padding="4dp"
+            android:contentDescription="Edit picture" />
+
+    </FrameLayout> <!--linear don't work if we want to keep edit button-->
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/userN"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:layout_marginBottom="6dp" />
+
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/input_bck"
+        android:hint="@string/userNH"
+        android:inputType="text"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/grey"
+        android:textSize="14sp"
+        android:layout_marginBottom="16dp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/btn_orange"
+        android:backgroundTint="@null"
+        android:text="@string/saveChanges"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSignOut"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/btn_orange"
+        android:backgroundTint="@null"
+        android:text="@string/signout"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:layout_marginBottom="24dp" />
+
+</LinearLayout>

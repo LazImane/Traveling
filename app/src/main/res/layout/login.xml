@@ -1,6 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bck"
+    android:padding="24dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Logo -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/traveling"
+        android:id="@+id/tvLogo" />
+
+    <!-- Spacer -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="0.15" />
+
+    <!-- Create an account -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/create_account"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/signup_instruction"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Email Input -->
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/input_bck"
+        android:hint="@string/email_hint"
+        android:inputType="textEmailAddress"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/grey"
+        android:textSize="14sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Continue Button -->
+    <Button
+        android:id="@+id/btnContinue"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/btn_orange"
+        android:text="@string/continue_btn"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp" />
+
+    <!-- OR Divider -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="20dp">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="   "/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/or"
+            android:textColor="@color/white"
+            android:textSize="13sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="   "/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="@color/white" />
+
+    </LinearLayout>
+
+    <!-- Continue with Google -->
+    <LinearLayout
+        android:id="@+id/btnGoogle"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/btn_outline"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_google"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/continue_google"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <!-- Continue with Apple -->
+    <LinearLayout
+        android:id="@+id/btnApple"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/btn_outline"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_apple"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/continue_apple"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <!-- Terms of Service text -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/terms_text"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Spacer to push guest button to bottom -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Continue as Guest -->
+    <Button
+        android:id="@+id/btnGuest"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/btn_orange"
+        android:text="@string/continue_guest"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp" />
+
+</LinearLayout>

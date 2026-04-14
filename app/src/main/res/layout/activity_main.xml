@@ -1,19 +1,235 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    android:background="@drawable/bck">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- HEADER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <!-- Profile Button (anonymous → goes to Login) -->
+        <ImageButton
+            android:id="@+id/btnProfile"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_guest_avatar"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Profile" />
+
+        <View
+            android:layout_width="25dp"
+            android:layout_height="0dp" />
+
+        <!-- Logo -->
+        <TextView
+            android:layout_width="230dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:background="@drawable/traveling"
+            android:contentDescription="Traveling logo" />
+
+        <!-- Menu to add later -->
+
+    </LinearLayout>
+
+    <!-- SEARCH BAR -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:background="@drawable/search_btn"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="10dp">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_search"
+            android:layout_marginEnd="8dp" />
+
+        <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/search_hint"
+            android:textColorHint="@color/grey"
+            android:textSize="13sp"
+            android:background="@null"
+            android:inputType="text" />
+
+        <ImageButton
+            android:id="@+id/btnVoiceSearch"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_mic"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Voice search" />
+
+    </LinearLayout>
+
+    <!-- FILTER CHIPS -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:scrollbars="none"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="12dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/filterNature"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="@string/nature"
+                android:textSize="14sp"
+                android:background="@drawable/filter_org_btn"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/filterCity"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="@string/city"
+                android:textSize="14sp"
+                android:background="@drawable/filter_btn"
+                android:textColor="@color/black"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/filterMuseums"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="@string/museum"
+                android:textSize="14sp"
+                android:background="@drawable/filter_btn"
+                android:textColor="@color/black"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/filterShops"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="@string/shop"
+                android:textSize="14sp"
+                android:background="@drawable/filter_btn"
+                android:textColor="@color/black"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/filterAround"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="@string/around_me"
+                android:textSize="14sp"
+                android:background="@drawable/filter_btn"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- SCROLLABLE CONTENT (posts go here later) -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/postsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Placeholder card while no real posts -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:gravity="center"
+                android:text="Posts will appear here"
+                android:textColor="@color/grey"
+                android:textSize="14sp"
+                android:background="@drawable/btn_outline"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- FOOTER NAV -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+
+        <ImageButton
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_home"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Home" />
+
+        <ImageButton
+            android:id="@+id/navTravelPath"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_map"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Map" />
+
+        <ImageButton
+            android:id="@+id/navPost"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_post"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="New Post" />
+
+        <ImageButton
+            android:id="@+id/navGroups"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_groups"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Groups" />
+
+        <ImageButton
+            android:id="@+id/navNotifications"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_bell"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Notifications" />
+
+    </LinearLayout>
+
+</LinearLayout>
