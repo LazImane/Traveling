@@ -31,7 +31,7 @@
             android:layout_weight="1"
             android:hint="@string/search_hint"
             android:textColorHint="@color/grey"
-            android:textSize="13sp"
+            android:textSize="15sp"
             android:background="@null"
             android:inputType="text" />
 

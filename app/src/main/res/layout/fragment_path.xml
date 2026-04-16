@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".PathFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:id="@+id/Restaurants"
+                    android:layout_width="150dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/filter_btn"
+                    android:layout_margin="5dp"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/food_icon"
+                        app:tint="@color/food_color" />
+
+                    <TextView
+                        android:id="@+id/RestaurantsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/restaurants"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/blackText" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/Culture"
+                    android:layout_width="150dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/filter_btn"
+                    android:layout_margin="5dp"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/culture_icon"
+                        app:tint="@color/yellow_culture" />
+
+
+                    <TextView
+                        android:id="@+id/CultureText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/culture"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/blackText" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:id="@+id/Discovery"
+                    android:layout_width="150dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/filter_btn"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/discoveries_icon"
+                        app:tint="@color/green_discoveries" />
+
+                    <TextView
+                        android:id="@+id/DiscoveryText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/discovery"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/blackText" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/Activities"
+                    android:layout_width="150dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/filter_btn"
+                    android:orientation="vertical"
+                    android:layout_margin="5dp"
+                    android:padding="20dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/activities_icon"
+                        app:tint="@color/blue_activities" />
+                    <TextView
+                        android:id="@+id/ActivitiesText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/activities"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/blackText"/>
+                </LinearLayout>
+        </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

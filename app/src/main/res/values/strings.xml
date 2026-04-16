@@ -65,4 +65,8 @@
     <string name="group"> Group </string>
     <string name="public_label"> Public </string>
     <string name="private_label"> Private </string>
+    <string name="activities">Activities</string>
+    <string name="discovery">Discovery</string>
+    <string name="culture">Culture</string>
+    <string name="restaurants">Food Service</string>
 </resources>
