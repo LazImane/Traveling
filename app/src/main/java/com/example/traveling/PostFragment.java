@@ -42,7 +42,7 @@ public class PostFragment extends Fragment {
     //Firebase
     FirebaseAuth mAuth;
     FirebaseFirestore db;
-    
+
 
     public PostFragment() {
         // Required empty public constructor

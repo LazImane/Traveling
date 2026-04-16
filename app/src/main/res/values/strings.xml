@@ -69,9 +69,17 @@
     <string name="group"> Group </string>
     <string name="public_label"> Public </string>
     <string name="private_label"> Private </string>
+
     <string name="login_required">Please log in to post</string>
     <string name="select_image">Please select an image</string>
     <string name="upload_failed">Upload failed</string>
     <string name="post_success">Posted!</string>
     <string name="post_failed">Post failed</string>
+
+    <!-- ============================= TRAVEL PATH ===================================-->
+    <string name="activities">Activities</string>
+    <string name="discovery">Discovery</string>
+    <string name="culture">Culture</string>
+    <string name="restaurants">Food Service</string>
+
 </resources>

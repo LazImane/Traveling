@@ -5,4 +5,10 @@
     <color name="grey">#828282</color>
     <color name="orange">#E09F3E</color>
     <color name="btnwhite">#EEEEEE</color>
+    <color name="blue_activities">#0058BC</color>
+    <color name="green_discoveries">#1B6D24</color>
+    <color name="yellow_culture">#FBBC05</color>
+    <color name="food_color">#894D00</color>
+    <color name="blackText">#191C1D</color>
+
 </resources>
