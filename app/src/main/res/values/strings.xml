@@ -49,5 +49,17 @@
     <string name="saveChanges"> Save Changes</string>
     <string name="signout"> Sign Out </string>
     <string name="saveFail">Failed to update profile.</string>
-    <!--<string name=""></string>-->
+    <!--            <string name=""></string>                 -->
+
+
+    <!-- ============================= POST STRINGS ===================================-->
+    <string name="post"> Post </string>
+    <string name="upload_picture">Upload Picture</string>
+    <string name="description"> Description </string>
+    <string name="tag"> Tags </string>
+    <string name="add_tag"> + Add Tag</string>
+    <string name="address"> Address </string>
+    <string name="group"> Group </string>
+    <string name="public_label"> Public </string>
+    <string name="private_label"> Private </string>
 </resources>
