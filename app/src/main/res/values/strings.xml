@@ -30,8 +30,12 @@
     <string name="confirm_password_hint">Please confirm your password</string>
     <string name="choose_password">Choose a strong password for your account</string>
     <string name="pwd6carMin">Password must be at least 6 characters</string>
+    <string name="password_mismatch">Password Mismath</string>
 
     <string name="signInFailG"> Failed to sign in as guest</string>
+    <string name="auth_failed"> Authorization Failed</string>
+    <string name="profile_create_failed">Failed to create profile</string>
+    <string name="load_profile_failed">Failed to load profile</string>
 
     <string name="back">Back</string>
 
@@ -65,24 +69,16 @@
     <string name="group"> Group </string>
     <string name="public_label"> Public </string>
     <string name="private_label"> Private </string>
+
+    <string name="login_required">Please log in to post</string>
+    <string name="select_image">Please select an image</string>
+    <string name="upload_failed">Upload failed</string>
+    <string name="post_success">Posted!</string>
+    <string name="post_failed">Post failed</string>
+
+    <!-- ============================= TRAVEL PATH ===================================-->
     <string name="activities">Activities</string>
     <string name="discovery">Discovery</string>
     <string name="culture">Culture</string>
     <string name="restaurants">Food Service</string>
-    <string name="start">Starting location</string>
-    <string name="start_location">starting location</string>
-    <string name="duration">Duration</string>
-    <string name="budget_max">Max Budget</string>
-    <string name="effort">Effort Level</string>
-    <string name="weather">Weather Sensitivity</string>
-    <string name="dynamic">Dynamic</string>
-    <string name="disabled">Disabled</string>
-    <string name="family">Family</string>
-    <string name="heat">Heat</string>
-    <string name="cold">Cold</string>
-    <string name="rain">Rain</string>
-    <string name="mandatory">Mandatory Visit</string>
-    <string name="mandatory_visit">Mandatory Visit</string>
-    <string name="add_visit">+ add visit</string>
-    <string name="search">Search</string>
 </resources>
