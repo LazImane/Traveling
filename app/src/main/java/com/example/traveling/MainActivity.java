@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             //TODO
         });
         navPost.setOnClickListener(v -> {
-            //TODO
+            replaceFragment(new PostFragment());
         });
         navGroups.setOnClickListener(v -> {
             //TODO

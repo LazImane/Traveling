@@ -30,8 +30,12 @@
     <string name="confirm_password_hint">Please confirm your password</string>
     <string name="choose_password">Choose a strong password for your account</string>
     <string name="pwd6carMin">Password must be at least 6 characters</string>
+    <string name="password_mismatch">Password Mismath</string>
 
     <string name="signInFailG"> Failed to sign in as guest</string>
+    <string name="auth_failed"> Authorization Failed</string>
+    <string name="profile_create_failed">Failed to create profile</string>
+    <string name="load_profile_failed">Failed to load profile</string>
 
     <string name="back">Back</string>
 
@@ -65,4 +69,9 @@
     <string name="group"> Group </string>
     <string name="public_label"> Public </string>
     <string name="private_label"> Private </string>
+    <string name="login_required">Please log in to post</string>
+    <string name="select_image">Please select an image</string>
+    <string name="upload_failed">Upload failed</string>
+    <string name="post_success">Posted!</string>
+    <string name="post_failed">Post failed</string>
 </resources>
