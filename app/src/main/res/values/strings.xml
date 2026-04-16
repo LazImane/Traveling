@@ -81,4 +81,18 @@
     <string name="discovery">Discovery</string>
     <string name="culture">Culture</string>
     <string name="restaurants">Food Service</string>
+    <string name="disabled">Disabled</string>
+    <string name="start_location">Starting Location</string>
+    <string name="budget_max">Budget Max</string>
+    <string name="duration">Duration Max</string>
+    <string name="effort">Effort</string>
+    <string name="family">Family</string>
+    <string name="dynamic">Dynamic</string>
+    <string name="weather">Weather Sensitivity</string>
+    <string name="heat">Heat</string>
+    <string name="cold">Cold</string>
+    <string name="rain">Rain</string>
+    <string name="mandatory_visit">Mandatory Visit</string>
+    <string name="add_visit">+ add visit</string>
+    <string name="search">Search</string>
 </resources>

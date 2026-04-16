@@ -42,6 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="@string/start_location"
+                    android:textColor="@color/blackText"
                     android:textColorHint="@color/grey"
                     android:textSize="15sp"
                     android:background="@null"
@@ -61,7 +62,7 @@
                     android:id="@+id/Restaurants"
                     android:layout_width="150dp"
                     android:layout_height="100dp"
-                    android:background="@drawable/filter_btn"
+                    android:background="@drawable/btn_white_big"
                     android:layout_margin="5dp"
                     android:orientation="vertical"
                     android:padding="20dp"
@@ -74,20 +75,19 @@
                         app:tint="@color/food_color" />
 
                     <TextView
-                        android:id="@+id/RestaurantsText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/restaurants"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="@color/blackText" />
+                        android:textColor="@color/button_text" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/Culture"
                     android:layout_width="150dp"
                     android:layout_height="100dp"
-                    android:background="@drawable/filter_btn"
+                    android:background="@drawable/btn_white_big"
                     android:layout_margin="5dp"
                     android:orientation="vertical"
                     android:padding="20dp"
@@ -97,17 +97,16 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:src="@drawable/culture_icon"
-                        app:tint="@color/yellow_culture" />
+                        app:tint="@color/culture_color" />
 
 
                     <TextView
-                        android:id="@+id/CultureText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/culture"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="@color/blackText" />
+                        android:textColor="@color/button_text" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -121,7 +120,7 @@
                     android:id="@+id/Discovery"
                     android:layout_width="150dp"
                     android:layout_height="100dp"
-                    android:background="@drawable/filter_btn"
+                    android:background="@drawable/btn_white_big"
                     android:orientation="vertical"
                     android:padding="20dp"
                     android:gravity="center_vertical">
@@ -130,23 +129,22 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:src="@drawable/discoveries_icon"
-                        app:tint="@color/green_discoveries" />
+                        app:tint="@color/discoveries_color" />
 
                     <TextView
-                        android:id="@+id/DiscoveryText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/discovery"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="@color/blackText" />
+                        android:textColor="@color/button_text" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/Activities"
                     android:layout_width="150dp"
                     android:layout_height="100dp"
-                    android:background="@drawable/filter_btn"
+                    android:background="@drawable/btn_white_big"
                     android:orientation="vertical"
                     android:layout_margin="5dp"
                     android:padding="20dp"
@@ -156,42 +154,42 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:src="@drawable/activities_icon"
-                        app:tint="@color/blue_activities" />
+                        app:tint="@color/activities_color" />
                     <TextView
-                        android:id="@+id/ActivitiesText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/activities"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="@color/blackText"/>
+                        android:textColor="@color/button_text"/>
                 </LinearLayout>
         </LinearLayout>
 
+
             <include layout="@layout/divider" />
+                    <LinearLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginHorizontal="40dp"
+                        android:layout_marginVertical="5dp"
+                        android:background="@drawable/btn_outline"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="5dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:orientation="horizontal"
-                    android:background="@drawable/btn_outline"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="5dp"
-                    android:paddingHorizontal="20dp"
-                    android:layout_marginVertical="5dp"
-                    android:layout_marginHorizontal="40dp"
-                    android:id="@+id/maxBudget">
-
-                    <EditText
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="@string/budget_max"
-                        android:textColorHint="@color/grey"
-                        android:textSize="20sp"
-                        android:background="@null"
-                        android:inputType="text"/>
-                </LinearLayout>
+                        <EditText
+                            android:id="@+id/editText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:hint="@string/budget_max"
+                            android:inputType="number"
+                            android:textColor="@color/blackText"
+                            android:textColorHint="@color/grey"
+                            android:textSize="20sp" />
+                    </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/Duration"
@@ -211,9 +209,10 @@
                         android:layout_weight="1"
                         android:background="@null"
                         android:hint="@string/duration"
-                        android:inputType="text"
+                        android:textColor="@color/blackText"
                         android:textColorHint="@color/grey"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:inputType="time"/>
                 </LinearLayout>
 
 
@@ -325,6 +324,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:hint="@string/mandatory_visit"
+                    android:textColor="@color/blackText"
                     android:inputType="text"
                     android:textColorHint="@color/grey"
                     android:textSize="20sp" />
