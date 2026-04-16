@@ -2,16 +2,10 @@ package com.example.traveling;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -35,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         init();
         setupUI();
         setListeners();
-        replaceFragment(new PostsFragments());
+        replaceFragment(new HomeFragments());
     }
 
     private void getIntentData() {
@@ -63,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         //the footer
         navHome.setOnClickListener(v -> {
-            replaceFragment(new PostsFragments());
+            replaceFragment(new HomeFragments());
         });
         navTravelPath.setOnClickListener(v -> {
             //TODO

@@ -9,16 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 
-import com.google.firebase.auth.FirebaseAuth;
-
-public class PostsFragments extends Fragment {
+public class HomeFragments extends Fragment {
     EditText etSearch;
     Button filterNature, filterCity, filterMuseums, filterShops, filterAround;
     View view;
 
-    public PostsFragments() {
+    public HomeFragments() {
         // Required empty public constructor
     }
 
@@ -30,7 +27,7 @@ public class PostsFragments extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_posts, container, false);
+        view = inflater.inflate(R.layout.fragment_home, container, false);
         init();
         setListeners();
         return view;
