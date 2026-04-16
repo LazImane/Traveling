@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             replaceFragment(new HomeFragments());
         });
         navTravelPath.setOnClickListener(v -> {
-            //TODO
+            replaceFragment(new PathFragment());
         });
         navPost.setOnClickListener(v -> {
             //TODO

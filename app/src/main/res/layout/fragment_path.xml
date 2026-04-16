@@ -15,7 +15,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:padding="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:background="@drawable/btn_outline"
+                android:gravity="center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="5dp">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_search"
+                    android:layout_marginEnd="8dp" />
+
+                <EditText
+                    android:id="@+id/etStartLocation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/start_location"
+                    android:textColorHint="@color/grey"
+                    android:textSize="15sp"
+                    android:background="@null"
+                    android:inputType="text"/>
+            </LinearLayout>
+
+
+            <include layout="@layout/divider" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -134,6 +168,198 @@
                 </LinearLayout>
         </LinearLayout>
 
+            <include layout="@layout/divider" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/btn_outline"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="5dp"
+                    android:paddingHorizontal="20dp"
+                    android:layout_marginVertical="5dp"
+                    android:layout_marginHorizontal="40dp"
+                    android:id="@+id/maxBudget">
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/budget_max"
+                        android:textColorHint="@color/grey"
+                        android:textSize="20sp"
+                        android:background="@null"
+                        android:inputType="text"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/Duration"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/btn_outline"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="5dp"
+                    android:paddingHorizontal="20dp"
+                    android:layout_marginVertical="5dp"
+                    android:layout_marginHorizontal="40dp">
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="@string/duration"
+                        android:inputType="text"
+                        android:textColorHint="@color/grey"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+
+            <include layout="@layout/divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:text="@string/effort" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingVertical="5dp">
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_disabled"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="@string/disabled"
+                    android:textSize="14sp"
+                    android:background="@drawable/btn_white"
+                    android:textColor="@color/button_text"
+                    android:layout_marginEnd="8dp" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_family"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="@string/family"
+                    android:textSize="14sp"
+                    android:background="@drawable/btn_white"
+                    android:textColor="@color/button_text"
+                    android:layout_marginEnd="8dp" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_dynamic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="@string/dynamic"
+                    android:textSize="14sp"
+                    android:background="@drawable/btn_white"
+                    android:textColor="@color/button_text"
+                    android:layout_marginEnd="8dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:text="@string/weather" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingVertical="5dp">
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_heat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="@string/heat"
+                    android:textSize="14sp"
+                    android:background="@drawable/btn_white"
+                    android:textColor="@color/button_text"
+                    android:layout_marginEnd="8dp" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_cold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="@string/cold"
+                    android:textSize="14sp"
+                    android:background="@drawable/btn_white"
+                    android:textColor="@color/button_text"
+                    android:layout_marginEnd="8dp" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_rain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="@string/rain"
+                    android:textSize="14sp"
+                    android:background="@drawable/btn_white"
+                    android:textColor="@color/button_text"
+                    android:layout_marginEnd="8dp" />
+
+            </LinearLayout>
+
+            <include layout="@layout/divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:background="@drawable/btn_outline"
+                android:gravity="center_vertical"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="20dp"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="40dp">
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="@string/mandatory_visit"
+                    android:inputType="text"
+                    android:textColorHint="@color/grey"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/add_visit"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:layout_marginHorizontal="60dp"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <LinearLayout
+                android:layout_width="160dp"
+                android:layout_height="70dp"
+                android:orientation="horizontal"
+                android:background="@drawable/btn_orange"
+                android:gravity="center">
+
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/search"
+                    android:textStyle="bold"
+                    android:textSize="30sp"
+                    android:gravity="center"
+                    android:textColor="@color/white"/>
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
