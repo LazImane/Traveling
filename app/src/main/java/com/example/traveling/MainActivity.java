@@ -12,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,8 +23,6 @@ public class MainActivity extends AppCompatActivity {
 
     ImageButton btnProfile, btnMenu;
     ImageButton navHome, navTravelPath, navPost, navGroups, navNotifications;
-    EditText etSearch;
-    Button filterNature, filterCity, filterMuseums, filterShops, filterAround;
 
     FirebaseAuth mAuth;
     boolean emailVerified;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         init();
         setupUI();
         setListeners();
+        replaceFragment(new PostsFragments());
     }
 
     private void getIntentData() {
@@ -47,12 +49,6 @@ public class MainActivity extends AppCompatActivity {
         navPost             = findViewById(R.id.navPost);
         navGroups           = findViewById(R.id.navGroups);
         navNotifications    = findViewById(R.id.navNotifications);
-        etSearch            = findViewById(R.id.etSearch);
-        filterNature        = findViewById(R.id.filterNature);
-        filterCity          = findViewById(R.id.filterCity);
-        filterMuseums       = findViewById(R.id.filterMuseums);
-        filterShops         = findViewById(R.id.filterShops);
-        filterAround        = findViewById(R.id.filterAround);
         mAuth               = FirebaseAuth.getInstance();
     }
 
@@ -67,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         //the footer
         navHome.setOnClickListener(v -> {
-            //do nothing as i am on home
+            replaceFragment(new PostsFragments());
         });
         navTravelPath.setOnClickListener(v -> {
             //TODO
@@ -83,11 +79,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //TODO: Filter button
-        filterNature.setOnClickListener(v -> handleFilter("nature"));
-        filterCity.setOnClickListener(v -> handleFilter("city"));
-        filterMuseums.setOnClickListener(v -> handleFilter("museums"));
-        filterShops.setOnClickListener(v -> handleFilter("shops"));
-        filterAround.setOnClickListener(v -> handleFilter("around"));
     }
 
     private void handleProfile() {
@@ -102,7 +93,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void handleFilter(String filter) {
-        //TODO
+
+    private void replaceFragment(Fragment fragment){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentLayout, fragment);
+        fragmentTransaction.commit();
     }
 }
