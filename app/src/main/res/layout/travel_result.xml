@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@drawable/btn_white_big"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginVertical="5dp">
+
+    <TextView
+        android:id="@+id/txt_time"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Time"
+        android:textColor="@color/blackText"
+        android:textSize="22sp"
+        android:layout_marginVertical="10dp"/>
+    <TextView
+        android:id="@+id/txt_budget"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Budget"
+        android:textColor="@color/blackText"
+        android:textSize="22sp"
+        android:layout_marginVertical="10dp"/>
+    <TextView
+        android:id="@+id/txt_walk"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Walk"
+        android:textColor="@color/blackText"
+        android:textSize="22sp"
+        android:layout_marginVertical="10dp"/>
+
+</LinearLayout>

@@ -59,47 +59,57 @@
 
         <ImageButton
             android:id="@+id/navHome"
-            android:layout_width="0dp"
+            android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_home"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            android:src="@drawable/icon_home"
+            android:background="@null"
             android:contentDescription="Home" />
 
         <ImageButton
             android:id="@+id/navTravelPath"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_map"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            android:src="@drawable/icon_map"
+            android:background="@null"
+            android:translationY="5dp"
+            android:scaleX="1.7"
+            android:scaleY="1.7"
             android:contentDescription="Map" />
 
         <ImageButton
             android:id="@+id/navPost"
-            android:layout_width="0dp"
+            android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_post"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            android:src="@drawable/icon_plus"
+            android:background="@null"
             android:contentDescription="New Post" />
 
         <ImageButton
             android:id="@+id/navGroups"
-            android:layout_width="0dp"
+            android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_groups"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            android:src="@drawable/icon_contact"
+            android:background="@null"
             android:contentDescription="Groups" />
 
         <ImageButton
             android:id="@+id/navNotifications"
-            android:layout_width="0dp"
+            android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_bell"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            android:src="@drawable/icon_bell"
+            android:background="@null"
+            android:scaleX="1.1"
+            android:scaleY="1.1"
             android:contentDescription="Notifications" />
 
     </LinearLayout>

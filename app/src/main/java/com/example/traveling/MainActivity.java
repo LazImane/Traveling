@@ -2,6 +2,7 @@ package com.example.traveling;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         setupUI();
         setListeners();
         replaceFragment(new HomeFragments());
+        fn_group_modified(navHome);
     }
 
     private void getIntentData() {
@@ -57,18 +59,23 @@ public class MainActivity extends AppCompatActivity {
 
         //the footer
         navHome.setOnClickListener(v -> {
+            fn_group_modified(navHome);
             replaceFragment(new HomeFragments());
         });
         navTravelPath.setOnClickListener(v -> {
+            fn_group_modified(navTravelPath);
             replaceFragment(new PathFragment());
         });
         navPost.setOnClickListener(v -> {
+            fn_group_modified(navPost);
             replaceFragment(new PostFragment());
         });
         navGroups.setOnClickListener(v -> {
+            fn_group_modified(navGroups);
             //TODO
         });
         navNotifications.setOnClickListener(v -> {
+            fn_group_modified(navNotifications);
             //TODO
         });
 
@@ -87,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    private void fn_group_modified(View v) {
+        navHome.setSelected(false);
+        navTravelPath.setSelected(false);
+        navPost.setSelected(false);
+        navGroups.setSelected(false);
+        navNotifications.setSelected(false);
+
+        v.setSelected(true);
+    }
 
     private void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();

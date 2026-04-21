@@ -95,4 +95,6 @@
     <string name="mandatory_visit">Mandatory Visit</string>
     <string name="add_visit">+ add visit</string>
     <string name="search">Search</string>
+    <string name="result_list">Search Result</string>
+    <string name="itinary">Itinary</string>
 </resources>
