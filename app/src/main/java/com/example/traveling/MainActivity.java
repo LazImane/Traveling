@@ -59,8 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         //the footer
         navHome.setOnClickListener(v -> {
-            fn_group_modified(navHome);
-            replaceFragment(new HomeFragments());
+            fn_home();
         });
         navTravelPath.setOnClickListener(v -> {
             fn_group_modified(navTravelPath);
@@ -72,11 +71,10 @@ public class MainActivity extends AppCompatActivity {
         });
         navGroups.setOnClickListener(v -> {
             fn_group_modified(navGroups);
-            //TODO
+            replaceFragment(new GroupsFragment());
         });
         navNotifications.setOnClickListener(v -> {
-            fn_group_modified(navNotifications);
-            //TODO
+            fn_notif();
         });
 
         //TODO: Filter button
@@ -94,6 +92,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void fn_home(){
+        fn_group_modified(navHome);
+        replaceFragment(new HomeFragments());
+    }
+    public void fn_notif(){
+        fn_group_modified(navNotifications);
+        replaceFragment(new NotificationsFragment());
+    }
 
     private void fn_group_modified(View v) {
         navHome.setSelected(false);

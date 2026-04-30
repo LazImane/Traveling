@@ -97,4 +97,8 @@
     <string name="search">Search</string>
     <string name="result_list">Search Result</string>
     <string name="itinary">Itinary</string>
+    <string name="find_group">Find your group...</string>
+    <string name="my_groups">My Groups</string>
+    <string name="notifications">Notifications</string>
+    <string name="delete">Delete</string>
 </resources>

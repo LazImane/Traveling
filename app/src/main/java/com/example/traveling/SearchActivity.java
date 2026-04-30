@@ -84,6 +84,5 @@ public class SearchActivity extends AppCompatActivity {
     private void display_path(){
         Intent intent = new Intent(this, PathActivity.class);
         startActivity(intent);
-
     }
 }
