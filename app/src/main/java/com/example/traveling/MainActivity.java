@@ -1,12 +1,16 @@
 package com.example.traveling;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -31,9 +35,23 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseUser user;
 
+    private static final int REQUEST_CODE_PERMISSIONS = 100;
+    private String[] REQUIRED_PERMISSIONS;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Set permissions based on Android version
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            REQUIRED_PERMISSIONS = new String[]{
+                    Manifest.permission.READ_MEDIA_IMAGES
+            };
+        } else {
+            REQUIRED_PERMISSIONS = new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+            };
+        }
+
         setContentView(R.layout.activity_main);
         getIntentData();
         init();
@@ -129,4 +147,5 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.fragmentLayout, fragment);
         fragmentTransaction.commit();
     }
+
 }

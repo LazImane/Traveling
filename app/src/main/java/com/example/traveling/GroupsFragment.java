@@ -25,6 +25,7 @@ import java.util.List;
 public class GroupsFragment extends Fragment {
     View view;
     LinearLayout groupsContainer;
+    EditText etSearch;
 
     MainActivity activity;
 
@@ -49,6 +50,7 @@ public class GroupsFragment extends Fragment {
     private void init() {
         activity = (MainActivity) getActivity();
         groupsContainer = view.findViewById(R.id.groupsContainer);
+        etSearch = view.findViewById(R.id.etSearch);
     }
     private void setListeners() {
 

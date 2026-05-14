@@ -26,9 +26,9 @@ import android.widget.Toast;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -168,29 +168,55 @@ public class PostFragment extends Fragment {
 
         btnPost.setEnabled(false);
 
+        // 1. Build the Storage path: post_images/<userId>/<timestamp>.jpg
+        String fileName = user.getUid() + "_" + System.currentTimeMillis() + ".jpg";
+        StorageReference imageRef = FirebaseStorage.getInstance()
+                .getReference("post_images/" + user.getUid() + "/" + fileName);
+
+        // 2. Upload the image bytes to Firebase Storage
+        imageRef.putFile(selectedImageUri)
+                .addOnFailureListener(e -> {
+                    btnPost.setEnabled(true);
+                    Toast.makeText(getContext(),
+                            "Image upload failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                })
+                .continueWithTask(task -> {
+                    if (!task.isSuccessful()) throw task.getException();
+                    // 3. Get the public download URL once upload completes
+                    return imageRef.getDownloadUrl();
+                })
+                .addOnSuccessListener(downloadUri -> {
+                    // 4. Save post metadata + image URL to Firestore
+                    savePostToFirestore(user, downloadUri.toString());
+                })
+                .addOnFailureListener(e -> {
+                    btnPost.setEnabled(true);
+                    Toast.makeText(getContext(),
+                            "Could not get image URL: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+    }
+
+    private void savePostToFirestore(FirebaseUser user, String imageUrl) {
         String description = etDescription.getText().toString().trim();
         String address     = etAddress.getText().toString().trim();
         String group       = etGroup.getText().toString().trim();
         boolean isPublic   = cbPublic.isChecked();
 
-        //everything except the image goes to Firestore
         Map<String, Object> post = new HashMap<>();
-        post.put("authorId",            user.getUid());
-        post.put("description",         description);
-        post.put("tags",                new ArrayList<>(tags));
-        post.put("address",             address);
-        post.put("group",               TextUtils.isEmpty(group) ? null : group);
-        post.put("isPublic",            isPublic);
-        post.put("isAnonymous",         user.isAnonymous());
-        post.put("likes",               0);
-        post.put("imageStoredLocally",  true); // image in SQLite
-        post.put("timestamp",           Timestamp.now());
+        post.put("authorId",    user.getUid());
+        post.put("description", description);
+        post.put("tags",        new ArrayList<>(tags));
+        post.put("address",     address);
+        post.put("group",       TextUtils.isEmpty(group) ? null : group);
+        post.put("isPublic",    isPublic);
+        post.put("isAnonymous", user.isAnonymous());
+        post.put("likes",       0);
+        post.put("imageUrl",    imageUrl);
+        post.put("timestamp",   Timestamp.now());
 
         mainActivity.db.collection("posts")
                 .add(post)
                 .addOnSuccessListener(docRef -> {
-                    //save image URI locally linked to the Firestore document
-                    mainActivity.dbHelper.insertPost(docRef.getId(), selectedImageUri.toString());
                     Toast.makeText(getContext(), getString(R.string.post_success), Toast.LENGTH_SHORT).show();
                     resetForm();
                 })

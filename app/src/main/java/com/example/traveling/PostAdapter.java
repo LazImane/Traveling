@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -45,11 +46,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void onBindViewHolder(@NonNull PostViewHolder h, int position) {
         PostItem post = posts.get(position);
 
-        if (post.getImageUri() != null) {
-            h.ivPostImage.setImageURI(Uri.parse(post.getImageUri()));
-        } else {
-            h.ivPostImage.setImageResource(R.drawable.post_frame);
-        }
+        Glide.with(h.itemView.getContext())
+                .load(post.getImageUri())          // handles null automatically → shows placeholder
+                .placeholder(R.drawable.post_frame)
+                .error(R.drawable.post_frame)      // also shows placeholder if the URL fails to load
+                .into(h.ivPostImage);
 
         // address / location label
         String address = post.getAddress();

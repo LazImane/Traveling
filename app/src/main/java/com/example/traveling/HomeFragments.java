@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -166,22 +167,31 @@ public class HomeFragments extends Fragment {
     private void loadPosts() {
         progressBar.setVisibility(View.VISIBLE);
 
+        Log.d("HomeFragments", "Starting to load posts...");
+
         // Query: public posts, ordered by newest first, limit 50 for now
         mainActivity.db.collection("posts")
                 .whereEqualTo("isPublic", true)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
+                //.orderBy("timestamp", Query.Direction.DESCENDING)
                 .limit(50)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
+                    Log.d("HomeFragments", "Success! Found " + querySnapshot.size() + " posts");
                     allPosts.clear();
                     for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                         PostItem item = buildPostItem(doc);
                         allPosts.add(item);
+                        Log.d("HomeFragments", "Post: " + item.getDescription());
                     }
                     applySearchAndFilter(etSearch.getText().toString().trim(), activeFilter);
                     progressBar.setVisibility(View.GONE);
+
+                    if (allPosts.isEmpty()) {
+                        Toast.makeText(getContext(), "No posts found in database", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .addOnFailureListener(e -> {
+                    Log.e("HomeFragments", "Failed to load posts", e);
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(getContext(),
                             "Failed to load posts: " + e.getMessage(),
@@ -211,9 +221,8 @@ public class HomeFragments extends Fragment {
         com.google.firebase.Timestamp ts = doc.getTimestamp("timestamp");
         if (ts != null) item.setTimestampMillis(ts.toDate().getTime());
 
-        // Image URI lives in SQLite
-        String imageUri = mainActivity.dbHelper.getImageUri(doc.getId());
-        item.setImageUri(imageUri);
+        // Image URL from Firebase Storage (works on any device)
+        item.setImageUri(doc.getString("imageUrl"));
 
         return item;
     }
