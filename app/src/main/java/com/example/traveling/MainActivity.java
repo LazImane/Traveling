@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     //local database storage
     DataBaseHelper dbHelper;
 
+    FirebaseUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth               = FirebaseAuth.getInstance();
         db                  = FirebaseFirestore.getInstance();
         dbHelper            = new DataBaseHelper(this);
+        user                = mAuth.getCurrentUser();
     }
 
     private void setupUI() {
