@@ -112,34 +112,23 @@
         </LinearLayout>
     </HorizontalScrollView>
 
+    <!-- Progress bar -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        android:indeterminateTint="@color/chip_green" />
+
+
     <!-- SCROLLABLE CONTENT (posts go here later) -->
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPosts"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:id="@+id/postsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <!-- Placeholder card while no real posts -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:gravity="center"
-                android:text="Posts will appear here"
-                android:textColor="@color/grey"
-                android:textSize="14sp"
-                android:background="@drawable/btn_outline"
-                android:layout_marginBottom="16dp" />
-
-        </LinearLayout>
-    </ScrollView>
-
+        android:paddingTop="4dp"
+        android:clipToPadding="false" />
 
 </LinearLayout>

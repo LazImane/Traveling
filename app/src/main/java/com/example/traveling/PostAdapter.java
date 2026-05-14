@@ -1,0 +1,133 @@
+package com.example.traveling;
+
+import android.net.Uri;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
+
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+
+    public interface OnPostClickListener {
+        void onPostClick(PostItem post); //called when a post is posted
+        void onLikeClick(PostItem post, int position); //called when a post is liked
+    }
+
+    private final List<PostItem> posts;
+    private final OnPostClickListener listener;
+
+    public PostAdapter(List<PostItem> posts, OnPostClickListener listener) {
+        this.posts    = posts;
+        this.listener = listener;
+    }
+
+    @NonNull
+    @Override
+    public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_post, parent, false);
+        return new PostViewHolder(v);
+    }// creates empty view holders which is the equivalent of an empty frame
+    //inflater converts xml into a views object
+
+    @Override
+    public void onBindViewHolder(@NonNull PostViewHolder h, int position) {
+        PostItem post = posts.get(position);
+
+        if (post.getImageUri() != null) {
+            h.ivPostImage.setImageURI(Uri.parse(post.getImageUri()));
+        } else {
+            h.ivPostImage.setImageResource(R.drawable.post_frame);
+        }
+
+        // address / location label
+        String address = post.getAddress();
+        if (address != null && !address.isEmpty()) {
+            h.tvAddress.setVisibility(View.VISIBLE);
+            h.tvAddress.setText(address);
+        } else {
+            h.tvAddress.setVisibility(View.GONE);
+        }
+
+        // Description used as the card "title"
+        String desc = post.getDescription();
+        h.tvDescription.setText((desc != null && !desc.isEmpty()) ? desc : "");
+
+        // Likes
+        h.tvLikeCount.setText(formatCount(post.getLikes()));
+
+        // Tags chips
+        h.chipGroupTags.removeAllViews();
+        if (post.getTags() != null) {
+            for (String tag : post.getTags()) {
+                Chip chip = new Chip(h.chipGroupTags.getContext());
+                chip.setText("#" + tag);
+                chip.setClickable(false);
+                chip.setCheckable(false);
+                h.chipGroupTags.addView(chip);
+            }
+        }
+
+        //  listeners
+        h.itemView.setOnClickListener(v -> listener.onPostClick(post));
+        h.btnLike.setOnClickListener(v -> listener.onLikeClick(post, h.getAdapterPosition()));
+    }
+
+    @Override
+    public int getItemCount() { return posts.size(); }
+
+    /** Called from the fragment after a like update to refresh just the count */
+    public void updateLikes(int position, long newCount) {
+        posts.get(position).setLikes(newCount);
+        notifyItemChanged(position, "likes");  // avoids image flicker
+    }
+
+    // partial-bind payload only refresh like count
+    @Override
+    public void onBindViewHolder(@NonNull PostViewHolder h, int position,
+                                 @NonNull List<Object> payloads) {
+        if (!payloads.isEmpty() && "likes".equals(payloads.get(0))) {
+            h.tvLikeCount.setText(formatCount(posts.get(position).getLikes()));
+        } else {
+            super.onBindViewHolder(h, position, payloads);
+        }
+    }
+
+    private String formatCount(long n) {
+        if (n >= 1_000_000) return String.format(Locale.US, "%.1fM", n / 1_000_000.0);
+        if (n >= 1_000)     return String.format(Locale.US, "%.1fk", n / 1_000.0);
+        return NumberFormat.getInstance().format(n);
+    }
+
+    // ---- ViewHolder ----
+
+    static class PostViewHolder extends RecyclerView.ViewHolder {
+        ImageView  ivPostImage;
+        TextView   tvAddress;
+        TextView   tvDescription;
+        ImageView  btnLike;
+        TextView   tvLikeCount;
+        ChipGroup  chipGroupTags;
+
+        PostViewHolder(@NonNull View itemView) {
+            super(itemView);
+            ivPostImage   = itemView.findViewById(R.id.ivPostImage);
+            tvAddress     = itemView.findViewById(R.id.tvAddress);
+            tvDescription = itemView.findViewById(R.id.tvDescription);
+            btnLike       = itemView.findViewById(R.id.btnLike);
+            tvLikeCount   = itemView.findViewById(R.id.tvLikeCount);
+            chipGroupTags = itemView.findViewById(R.id.chipGroupTags);
+        }
+    }
+}
