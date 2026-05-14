@@ -13,14 +13,21 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
     ImageButton btnProfile, btnMenu;
     ImageButton navHome, navTravelPath, navPost, navGroups, navNotifications;
 
-    FirebaseAuth mAuth;
     boolean emailVerified;
+
+    //Firebase
+    FirebaseAuth mAuth;
+    FirebaseFirestore db;
+
+    //local database storage
+    DataBaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         navGroups           = findViewById(R.id.navGroups);
         navNotifications    = findViewById(R.id.navNotifications);
         mAuth               = FirebaseAuth.getInstance();
+        db                  = FirebaseFirestore.getInstance();
+        dbHelper            = new DataBaseHelper(this);
     }
 
     private void setupUI() {

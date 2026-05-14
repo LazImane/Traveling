@@ -47,16 +47,12 @@ public class PostFragment extends Fragment {
     AppCompatButton btnPost;
     View view;
 
+    MainActivity mainActivity;
+
     //State
     Uri selectedImageUri = null;
     List<String> tags = new ArrayList<>();
 
-    //Firebase
-    FirebaseAuth mAuth;
-    FirebaseFirestore db;
-
-    //local database storage
-    DataBaseHelper dbHelper;
 
     // image picker
     ActivityResultLauncher<Intent> imagePickerLauncher;
@@ -70,6 +66,7 @@ public class PostFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mainActivity = (MainActivity)getContext();
         //launcher to open gallery
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -105,10 +102,6 @@ public class PostFragment extends Fragment {
         cbPrivate     = view.findViewById(R.id.cbPrivate);
         btnPost       = view.findViewById(R.id.btnPost);
 
-        mAuth   = FirebaseAuth.getInstance();
-        db      = FirebaseFirestore.getInstance();
-
-        dbHelper = new DataBaseHelper(getContext());
     }
     private void setListeners() {
         ivPostIm.setOnClickListener(v -> openImagePicker());
@@ -163,7 +156,7 @@ public class PostFragment extends Fragment {
     /*============================POST MANAGEMENT=================================*/
 
     private void handlePost() {
-        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseUser user = mainActivity.mAuth.getCurrentUser();
         if (user == null) {
             Toast.makeText(getContext(), getString(R.string.login_required), Toast.LENGTH_SHORT).show();
             return;
@@ -193,11 +186,11 @@ public class PostFragment extends Fragment {
         post.put("imageStoredLocally",  true); // image in SQLite
         post.put("timestamp",           Timestamp.now());
 
-        db.collection("posts")
+        mainActivity.db.collection("posts")
                 .add(post)
                 .addOnSuccessListener(docRef -> {
                     //save image URI locally linked to the Firestore document
-                    dbHelper.insertPost(docRef.getId(), selectedImageUri.toString());
+                    mainActivity.dbHelper.insertPost(docRef.getId(), selectedImageUri.toString());
                     Toast.makeText(getContext(), getString(R.string.post_success), Toast.LENGTH_SHORT).show();
                     resetForm();
                 })
