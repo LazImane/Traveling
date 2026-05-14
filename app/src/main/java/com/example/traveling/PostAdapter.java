@@ -13,9 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.io.File;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
@@ -45,8 +47,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void onBindViewHolder(@NonNull PostViewHolder h, int position) {
         PostItem post = posts.get(position);
 
-        if (post.getImageUri() != null) {
-            h.ivPostImage.setImageURI(Uri.parse(post.getImageUri()));
+        if (post.getImageUri() != null && !post.getImageUri().isEmpty()) {
+            File img = new File(Objects.requireNonNull(Uri.parse(post.getImageUri()).getPath()));
+            if(!img.exists()) h.tvDescription.setText(post.getImageUri());
+//            h.ivPostImage.setImageURI(Uri.parse(post.getImageUri()));
+
         } else {
             h.ivPostImage.setImageResource(R.drawable.post_frame);
         }
@@ -62,7 +67,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         // Description used as the card "title"
         String desc = post.getDescription();
-        h.tvDescription.setText((desc != null && !desc.isEmpty()) ? desc : "");
+//        h.tvDescription.setText((desc != null && !desc.isEmpty()) ? desc : "");
 
         // Likes
         h.tvLikeCount.setText(formatCount(post.getLikes()));

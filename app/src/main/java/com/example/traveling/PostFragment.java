@@ -89,18 +89,18 @@ public class PostFragment extends Fragment {
 
 
     private void init() {
-        ivPostIm   = view.findViewById(R.id.ivPostImage);
-        etDescription = view.findViewById(R.id.etDescription);
-        etTag         = view.findViewById(R.id.etTag);
-        etAddress     = view.findViewById(R.id.etAddress);
-        etGroup       = view.findViewById(R.id.etGroup);
-        ibVoiceDesc  = view.findViewById(R.id.btnVoiceDesc);
-        ibAiTag      = view.findViewById(R.id.btnAiTag);
-        tvAddTag      = view.findViewById(R.id.tvAddTag);
-        chipGroupTags = view.findViewById(R.id.chipGroupTags);
-        cbPublic      = view.findViewById(R.id.cbPublic);
-        cbPrivate     = view.findViewById(R.id.cbPrivate);
-        btnPost       = view.findViewById(R.id.btnPost);
+        ivPostIm        = view.findViewById(R.id.ivPostImage);
+        etDescription   = view.findViewById(R.id.etDescription);
+        etTag           = view.findViewById(R.id.etTag);
+        etAddress       = view.findViewById(R.id.etAddress);
+        etGroup         = view.findViewById(R.id.etGroup);
+        ibVoiceDesc     = view.findViewById(R.id.btnVoiceDesc);
+        ibAiTag         = view.findViewById(R.id.btnAiTag);
+        tvAddTag        = view.findViewById(R.id.tvAddTag);
+        chipGroupTags   = view.findViewById(R.id.chipGroupTags);
+        cbPublic        = view.findViewById(R.id.cbPublic);
+        cbPrivate       = view.findViewById(R.id.cbPrivate);
+        btnPost         = view.findViewById(R.id.btnPost);
 
     }
     private void setListeners() {

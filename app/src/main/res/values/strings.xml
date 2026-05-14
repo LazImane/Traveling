@@ -101,4 +101,7 @@
     <string name="my_groups">My Groups</string>
     <string name="notifications">Notifications</string>
     <string name="delete">Delete</string>
+    <string name="createGroup">Create New Group</string>
+    <string name="groupName">enter a group name</string>
+    <string name="create_group">+ Create Group</string>
 </resources>

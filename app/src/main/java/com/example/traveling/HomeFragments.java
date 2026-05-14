@@ -169,7 +169,7 @@ public class HomeFragments extends Fragment {
         // Query: public posts, ordered by newest first, limit 50 for now
         mainActivity.db.collection("posts")
                 .whereEqualTo("isPublic", true)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
+//                .orderBy("timestamp", Query.Direction.DESCENDING)
                 .limit(50)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {

@@ -1,6 +1,7 @@
 package com.example.traveling;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,14 +18,21 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class GroupsFragment extends Fragment {
     View view;
     LinearLayout groupsContainer;
+
+    Map<View, String> groups = new HashMap<>();
+    View addGroup;
 
     MainActivity activity;
 
@@ -43,18 +51,30 @@ public class GroupsFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_groups, container, false);
         init();
         setListeners();
-        createGroups();
         return view;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        createGroups();
     }
     private void init() {
         activity = (MainActivity) getActivity();
         groupsContainer = view.findViewById(R.id.groupsContainer);
+        addGroup = view.findViewById(R.id.addGroup);
     }
     private void setListeners() {
+        addGroup.setOnClickListener(v -> createNewGroup());
+    }
 
+    private void createNewGroup(){
+        Intent intent = new Intent(activity, GroupActivity.class);
+        startActivity(intent);
     }
 
     private void createGroups(){
+        groupsContainer.removeAllViews();
         activity.db.collection("groups_to_users_link")
             .whereEqualTo("user_id", activity.user.getUid())
             .get()
@@ -77,7 +97,8 @@ public class GroupsFragment extends Fragment {
 
     private void createGroup(String groupId){
         if(!isAdded()) return;
-        LinearLayout newGroup = (LinearLayout)getLayoutInflater().inflate(R.layout.view_group, groupsContainer, false);
+        View newGroup = getLayoutInflater().inflate(R.layout.view_group, groupsContainer, false);
+        groups.put(newGroup, groupId);
         View group_button = newGroup.findViewById(R.id.group_button);
         group_button.setOnClickListener(v -> activity.fn_home());
         View button = newGroup.findViewById(R.id.options);
@@ -122,12 +143,26 @@ public class GroupsFragment extends Fragment {
         menu.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.action_delete) {
                 View group = (View) v.getParent();
-                groupsContainer.removeView(group);
+                leaveGroup(group);
                 return true;
             }
             return false;
         });
 
         menu.show();
+    }
+
+    private void leaveGroup(View group){
+        groupsContainer.removeView(group);
+        String groupId = Objects.requireNonNull(groups.get(group));
+        activity.db.collection("groups").document(groupId).delete();
+        activity.db.collection("groups_to_users_link")
+                .whereEqualTo("group_id", groupId)
+                .get()
+                .addOnSuccessListener(query -> {
+                    for (DocumentSnapshot doc : query) {
+                        doc.getReference().delete();
+                    }
+                });
     }
 }
