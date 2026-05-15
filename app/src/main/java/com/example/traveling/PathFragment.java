@@ -99,8 +99,8 @@ public class PathFragment extends Fragment {
     }
 
     private void fn_search(){
+
         Intent intent = new Intent(getActivity(), SearchActivity.class);
-        intent.putExtra("start_location", et_start_location.getText());
         intent.putExtra("food", btn_food.isSelected());
         intent.putExtra("culture", btn_culture.isSelected());
         intent.putExtra("discovery", btn_discovery.isSelected());
@@ -120,7 +120,14 @@ public class PathFragment extends Fragment {
         intent.putExtra("cold", btn_cold.isSelected());
         intent.putExtra("heat", btn_heat.isSelected());
         intent.putExtra("rain", btn_rain.isSelected());
-        startActivity(intent);
+        new Thread(() -> {
+            SearchInfo start_loc = MVPMapSearch.getCoordinatesThread(getActivity(), et_start_location.getText().toString());
+            if(start_loc == null) return;
+            intent.putExtra("start_lat", start_loc.lat);
+            intent.putExtra("start_lon", start_loc.lon);
+            System.out.println(start_loc.lat + " " + start_loc.lon);
+            startActivity(intent);
+        }).start();
     }
 
 
