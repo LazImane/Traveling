@@ -14,6 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class PathFragment extends Fragment {
     public PathFragment() {
         // Required empty public constructor
@@ -22,7 +25,7 @@ public class PathFragment extends Fragment {
 
     Button btn_family, btn_disabled, btn_dynamic, btn_heat, btn_cold, btn_rain;
     LinearLayout btn_food, btn_culture, btn_discovery, btn_activities, btn_search, visitLayout;
-    EditText et_mandatory_visit, et_budget, et_duration;
+    EditText et_start_location, et_mandatory_visit, et_budget, et_duration;
     View addVisit;
     View view;
 
@@ -57,6 +60,7 @@ public class PathFragment extends Fragment {
         et_mandatory_visit  = view.findViewById(R.id.et_mandatory_visit);
         et_budget           = view.findViewById(R.id.et_budget);
         et_duration         = view.findViewById(R.id.et_duration);
+        et_start_location   = view.findViewById(R.id.et_start_location);
         btn_search          = view.findViewById(R.id.btn_search);
     }
 
@@ -96,6 +100,7 @@ public class PathFragment extends Fragment {
 
     private void fn_search(){
         Intent intent = new Intent(getActivity(), SearchActivity.class);
+        intent.putExtra("start_location", et_start_location.getText());
         intent.putExtra("food", btn_food.isSelected());
         intent.putExtra("culture", btn_culture.isSelected());
         intent.putExtra("discovery", btn_discovery.isSelected());
@@ -117,6 +122,8 @@ public class PathFragment extends Fragment {
         intent.putExtra("rain", btn_rain.isSelected());
         startActivity(intent);
     }
+
+
 
     private void fn_add_visit(){
         if(!et_mandatory_visit.getText().toString().isEmpty()){

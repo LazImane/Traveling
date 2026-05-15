@@ -53,6 +53,8 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void createTravels() {
+//        MVPMapSearch.getCoordinates(getActivity(), et_start_location.getText().toString());
+//        MVPMapSearch.test(getActivity(), 0);
         for(int i = 0; i < 3; i ++){
             LinearLayout newVisit = (LinearLayout)getLayoutInflater().inflate(R.layout.travel_result, layout_results, false);
             newVisit.setOnClickListener(v -> display_path());
