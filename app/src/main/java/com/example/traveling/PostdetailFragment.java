@@ -1,5 +1,6 @@
 package com.example.traveling;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +21,10 @@ import com.google.firebase.firestore.FieldValue;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**TODO : COMMENTS + SIGNALER + LIKES + Open MAP**/
 public class PostdetailFragment extends Fragment {
@@ -31,8 +34,6 @@ public class PostdetailFragment extends Fragment {
     private String postId;
     private MainActivity mainActivity;
     private PostItem post;
-
-    // Keep a reference to the inflated view to avoid 'Cannot resolve symbol view'
     private View rootView;
 
     // Views
@@ -40,8 +41,13 @@ public class PostdetailFragment extends Fragment {
     private TextView tvDetailTitle, tvDetailAddress, tvDetailDate,
             tvDetailLocation, tvDetailAuthor, tvDetailGroup, tvDetailNarrative;
     private ChipGroup chipGroupDetailTags;
-    private ImageView btnBack;
-    private LinearLayout rowLocation, rowGroup;
+    private ImageView btnBack, btnLike, btnComment, btnLocation;
+    private TextView tvLikeCount, tvCommentCount;
+    private LinearLayout rowLocation, rowGroup, btnSignalerContainer;
+
+    //Like state
+    private boolean likedByMe = false;
+    private String currentUid;
 
     public PostdetailFragment() {}
 
@@ -84,6 +90,12 @@ public class PostdetailFragment extends Fragment {
         tvDetailNarrative   = rootView.findViewById(R.id.tvDetailNarrative);
         chipGroupDetailTags = rootView.findViewById(R.id.chipGroupDetailTags);
         btnBack             = rootView.findViewById(R.id.btnBack);
+        btnLike             = rootView.findViewById(R.id.btnLike);
+        tvLikeCount         = rootView.findViewById(R.id.tvLikeCount);
+        btnComment          = rootView.findViewById(R.id.btnComment);
+        tvCommentCount      = rootView.findViewById(R.id.tvCommentCount);
+        btnLocation         = rootView.findViewById(R.id.btnLocation);
+        btnSignalerContainer = rootView.findViewById(R.id.btnSignalerContainer);
         rowLocation         = rootView.findViewById(R.id.rowLocation);
         rowGroup            = rootView.findViewById(R.id.rowGroup);
 
@@ -132,6 +144,9 @@ public class PostdetailFragment extends Fragment {
     }
 
     private void bindViews() {
+        currentUid = mainActivity.mAuth.getCurrentUser() != null
+                ? mainActivity.mAuth.getCurrentUser().getUid() : null;
+
         // Hero image
         Glide.with(this)
                 .load(post.getImageUri())
@@ -139,10 +154,10 @@ public class PostdetailFragment extends Fragment {
                 .error(R.drawable.post_frame)
                 .into(ivDetailImage);
 
-        // Title (description shown as bold title over image)
+        // Title
         tvDetailTitle.setText( post.getTitle() != null ? post.getTitle() : "");
 
-        // Narrative (same field for now — swap for a dedicated field if you add one later)
+        // Narrative
         tvDetailNarrative.setText(post.getDescription() != null ? post.getDescription() : "");
 
         // Address badge over image
@@ -193,6 +208,25 @@ public class PostdetailFragment extends Fragment {
                 chipGroupDetailTags.addView(chip);
             }
         }
+
+        // Action bar
+        tvLikeCount.setText(String.valueOf(post.getLikes()));
+        checkIfLiked();
+        btnLike.setOnClickListener(v -> handleLike());
+
+        loadCommentCount();
+        btnComment.setOnClickListener(v -> {
+            CommentBottomSheet sheet = CommentBottomSheet.newInstance(post.getFirestoreId());
+            sheet.setOnCommentPostedListener(newCount ->
+                    tvCommentCount.setText(String.valueOf(newCount)));
+            sheet.show(getChildFragmentManager(), "comments");
+        });
+
+        btnLocation.setOnClickListener(v -> openMaps());
+        rootView.findViewById(R.id.tvLocation)
+                .setOnClickListener(v -> openMaps());
+
+        btnSignalerContainer.setOnClickListener(v -> submitReport());
     }
 
     /**
@@ -257,4 +291,123 @@ public class PostdetailFragment extends Fragment {
                 })
                 .addOnFailureListener(e -> rowGroup.setVisibility(View.GONE));
     }
+
+    /** HANDLES LIKES */
+    private void checkIfLiked() {
+        if (currentUid == null) return;
+        mainActivity.db.collection("liked_by")
+                .whereEqualTo("postId", post.getFirestoreId())
+                .whereEqualTo("userId", currentUid)
+                .get()
+                .addOnSuccessListener(qs -> {
+                    likedByMe = !qs.isEmpty();
+                    btnLike.setImageResource(likedByMe
+                            ? R.drawable.ic_heart_fill
+                            : R.drawable.ic_heart);
+                });
+    }
+
+    private void handleLike() {
+        if (currentUid == null) {
+            Toast.makeText(getContext(), "Sign in to like posts", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (likedByMe) {
+            // Unlike
+            likedByMe = false;
+            btnLike.setImageResource(R.drawable.ic_heart);
+            post.setLikes(post.getLikes() - 1);
+            tvLikeCount.setText(String.valueOf(post.getLikes()));
+
+            mainActivity.db.collection("liked_by")
+                    .whereEqualTo("postId", post.getFirestoreId())
+                    .whereEqualTo("userId", currentUid)
+                    .get()
+                    .addOnSuccessListener(qs -> {
+                        for (DocumentSnapshot d : qs) d.getReference().delete();
+                    })
+                    .addOnFailureListener(e -> {
+                        likedByMe = true;
+                        btnLike.setImageResource(R.drawable.ic_heart_fill);
+                        post.setLikes(post.getLikes() + 1);
+                        tvLikeCount.setText(String.valueOf(post.getLikes()));
+                    });
+
+            mainActivity.db.collection("posts").document(post.getFirestoreId())
+                    .update("likes", FieldValue.increment(-1));
+        } else {
+            // Like
+            likedByMe = true;
+            btnLike.setImageResource(R.drawable.ic_heart_fill);
+            post.setLikes(post.getLikes() + 1);
+            tvLikeCount.setText(String.valueOf(post.getLikes()));
+
+            Map<String, Object> likeDoc = new HashMap<>();
+            likeDoc.put("postId", post.getFirestoreId());
+            likeDoc.put("userId", currentUid);
+            mainActivity.db.collection("liked_by").document()
+                    .set(likeDoc)
+                    .addOnFailureListener(e -> {
+                        likedByMe = false;
+                        btnLike.setImageResource(R.drawable.ic_heart);
+                        post.setLikes(post.getLikes() - 1);
+                        tvLikeCount.setText(String.valueOf(post.getLikes()));
+                    });
+
+            mainActivity.db.collection("posts").document(post.getFirestoreId())
+                    .update("likes", FieldValue.increment(1));
+        }
+    }
+
+    /** comment count */
+    private void loadCommentCount() {
+        mainActivity.db.collection("comments")
+                .whereEqualTo("postId", post.getFirestoreId())
+                .get()
+                .addOnSuccessListener(qs ->
+                        tvCommentCount.setText(String.valueOf(qs.size())));
+    }
+
+    private void openMaps() {
+        //TODO : WITH OPEN MAP STREET OR SMT
+    }
+
+    private void submitReport() {
+        if (currentUid == null) {
+            Toast.makeText(getContext(), getString(R.string.connect_to_report),
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Prevent duplicate reports from the same user on the same post
+        mainActivity.db.collection("reports")
+                .whereEqualTo("postId", post.getFirestoreId())
+                .whereEqualTo("userId", currentUid)
+                .get()
+                .addOnSuccessListener(qs -> {
+                    if (!qs.isEmpty()) {
+                        Toast.makeText(getContext(),
+                                getString(R.string.already_reported),
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    Map<String, Object> report = new HashMap<>();
+                    report.put("postId",    post.getFirestoreId());
+                    report.put("userId",    currentUid);
+                    report.put("timestamp", com.google.firebase.Timestamp.now());
+
+                    mainActivity.db.collection("reports").document()
+                            .set(report)
+                            .addOnSuccessListener(unused ->
+                                    Toast.makeText(getContext(),
+                                            getString(R.string.post_reported),
+                                            Toast.LENGTH_SHORT).show())
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(getContext(),
+                                            getString(R.string.report_fail),
+                                            Toast.LENGTH_SHORT).show());
+                });
+    }
+
 }

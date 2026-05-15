@@ -187,7 +187,7 @@ public class HomeFragments extends Fragment {
 
         Log.d("HomeFragments", "Starting to load posts...");
 
-        // Query: public posts, ordered by newest first, limit 50 for now
+        // Query: public posts limit 50 for now
         mainActivity.db.collection("posts")
                 .whereEqualTo("isPublic", true)
                 //.orderBy("timestamp", Query.Direction.DESCENDING)
@@ -274,7 +274,6 @@ public class HomeFragments extends Fragment {
 
         if (post.isLikedByMe()) {
             // --- UNLIKE ---
-            // Optimistic UI
             post.setLikedByMe(false);
             post.setLikes(post.getLikes() - 1);
             adapter.updateLikes(position, post.getLikes());
@@ -302,7 +301,6 @@ public class HomeFragments extends Fragment {
 
         } else {
             // --- LIKE ---
-            // Optimistic UI
             post.setLikedByMe(true);
             post.setLikes(post.getLikes() + 1);
             adapter.updateLikes(position, post.getLikes());

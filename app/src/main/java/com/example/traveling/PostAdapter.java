@@ -89,6 +89,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         h.itemView.setOnClickListener(v -> listener.onPostClick(post));
         h.btnLike.setSelected(post.isLikedByMe());
         h.btnLike.invalidate();
+        updateLikeButton(h.btnLike, post.isLikedByMe());
         h.btnLike.setOnClickListener(v -> listener.onLikeClick(post, h.getAdapterPosition()));
     }
 
@@ -98,18 +99,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     /** Called from the fragment after a like update to refresh just the count */
     public void updateLikes(int position, long newCount) {
         posts.get(position).setLikes(newCount);
-        notifyItemChanged(position, "likes");  // avoids image flicker
+        notifyItemChanged(position, "likes");
     }
 
-    // partial-bind payload only refresh like count
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder h, int position,
                                  @NonNull List<Object> payloads) {
         if (!payloads.isEmpty() && "likes".equals(payloads.get(0))) {
-            h.tvLikeCount.setText(formatCount(posts.get(position).getLikes()));
+            PostItem post = posts.get(position);
+            h.tvLikeCount.setText(formatCount(post.getLikes()));
+            updateLikeButton(h.btnLike, post.isLikedByMe());
         } else {
             super.onBindViewHolder(h, position, payloads);
         }
+    }
+
+    private void updateLikeButton(ImageView btn, boolean liked) {
+        btn.setImageResource(liked ? R.drawable.ic_heart_fill : R.drawable.ic_heart);
     }
 
     private String formatCount(long n) {
