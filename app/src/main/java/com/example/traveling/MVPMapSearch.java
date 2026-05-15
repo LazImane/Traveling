@@ -35,7 +35,7 @@ public class MVPMapSearch {
                 "way[\"amenity\"=\"arts_centre\"][\"name\"](around:" + rad + "," + lat + "," + lon + ");" +
                 "relation[\"amenity\"=\"arts_centre\"][\"name\"](around:" + rad + "," + lat + "," + lon + ");" +
                 ");" +
-                "out center 30;";
+                "out center;";
     }
 
     public static String discoveryQuery(int rad, double lat, double lon) {
@@ -55,7 +55,8 @@ public class MVPMapSearch {
                 "node[\"leisure\"=\"nature_reserve\"][\"name\"](around:" + rad + "," + lat + "," + lon + ");" +
                 "way[\"leisure\"=\"nature_reserve\"][\"name\"](around:" + rad + "," + lat + "," + lon + ");" +
                 "relation[\"leisure\"=\"nature_reserve\"][\"name\"](around:" + rad + "," + lat + "," + lon + ");" +
-                ");";
+                ");"+
+                "out center;";
     }
 
     public static String activityQuery(int rad, double lat, double lon){
@@ -69,7 +70,7 @@ public class MVPMapSearch {
                     "node[\"leisure\"=\"amusement_arcade\"][\"name\"](around:" + rad + "," + lat + "," + lon + ");" +
                     "node[\"leisure\"=\"escape_game\"][\"name\"](around:" + rad + "," + lat + "," + lon + ");" +
                     ");"+
-                    "out center 30;";
+                    "out center ;";
     }
 
     public static String restaurantQuery(int rad, double lat, double lon){
@@ -79,7 +80,7 @@ public class MVPMapSearch {
                         "way[\"amenity\"=\"restaurant\"][\"name\"](around:" + rad + "," + lat + "," + lon + ");" +
                         "relation[\"amenity\"=\"restaurant\"][\"name\"](around:" + rad + "," + lat + "," + lon + ");" +
                         ");" +
-                        "out center 30;";
+                        "out center;";
     }
 
 
@@ -92,8 +93,8 @@ public class MVPMapSearch {
         }).start();
     }
 
-    public static List<Double> getCoordinatesThread(Activity context, String placeName) {
-        List<Double> coords = new ArrayList<>();
+    public static SearchInfo getCoordinatesThread(Activity context, String placeName) {
+        SearchInfo results = null;
 
         try {
             String encodedPlace = URLEncoder.encode(placeName, "UTF-8");
@@ -114,7 +115,7 @@ public class MVPMapSearch {
 
             int responseCode = conn.getResponseCode();
             if (responseCode != 200) {
-                return coords; // empty list if request failed
+                return null; // empty list if request failed
             }
 
             BufferedReader reader = new BufferedReader(
@@ -136,41 +137,32 @@ public class MVPMapSearch {
             if (jsonArray.length() > 0) {
                 JSONObject first = jsonArray.getJSONObject(0);
 
-                double lat = Double.parseDouble(first.getString("lat"));
-                double lon = Double.parseDouble(first.getString("lon"));
 
-                coords.add(lat);
-                coords.add(lon);
+                results = new SearchInfo(
+                        Double.parseDouble(first.getString("lat")),
+                        Double.parseDouble(first.getString("lon")),
+                        first.getString("name")
+                );
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return coords;
+        return results;
     }
 
-    public static void test(Activity context, int queryType) {
+    public static List<SearchInfo> search_near_coordinates_thread(Activity context, int queryType, int radius, double lat, double lon){
         String query;
-        // Paris coordinates
-        double lat = 48.8566;
-        double lon = 2.3522;
-        int radius = 1000; // 1km
-
-        if(queryType == 0) query = restaurantQuery(radius, lat, lon);
-        else if(queryType == 1) query = cultureQuery(radius, lat, lon);
-        else if(queryType == 2) query = discoveryQuery(radius, lat, lon);
-        else if(queryType == 3) query = activityQuery(radius, lat, lon);
+        if(queryType == 1) query = restaurantQuery(radius, lat, lon);
+        else if(queryType == 2) query = cultureQuery(radius, lat, lon);
+        else if(queryType == 3) query = discoveryQuery(radius, lat, lon);
+        else if(queryType == 4) query = activityQuery(radius, lat, lon);
         else query = "";
-
-        new Thread(() -> {
-            String results = MVPMapSearch.searchPlaces(context, query);
-            System.out.println(results);
-
-        }).start();
+        return MVPMapSearch.searchPlaces(context, query);
     }
-    private static String searchPlaces(Activity context, String query) {
-        StringBuilder result = new StringBuilder();
+    private static List<SearchInfo> searchPlaces(Activity context, String query) {
+        List<SearchInfo> result = new ArrayList<>();
 
         try {
 
@@ -229,20 +221,13 @@ public class MVPMapSearch {
                     pLat = center.getDouble("lat");
                     pLon = center.getDouble("lon");
                 }
-
-                result.append("Name: ")
-                        .append(name)
-                        .append("\nLatitude: ")
-                        .append(pLat)
-                        .append("\nLongitude: ")
-                        .append(pLon)
-                        .append("\n\n");
+                result.add(new SearchInfo(pLat, pLon, name));
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return result.toString();
+        return result;
     }
 }
