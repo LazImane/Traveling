@@ -87,6 +87,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         //  listeners
         h.itemView.setOnClickListener(v -> listener.onPostClick(post));
+        h.btnLike.setSelected(post.isLikedByMe());
+        h.btnLike.invalidate();
         h.btnLike.setOnClickListener(v -> listener.onLikeClick(post, h.getAdapterPosition()));
     }
 
@@ -122,7 +124,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         ImageView  ivPostImage;
         TextView   tvAddress;
         TextView tvTitle;
-        TextView   tvDescription;
         ImageView  btnLike;
         TextView   tvLikeCount;
         ChipGroup  chipGroupTags;

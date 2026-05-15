@@ -65,7 +65,7 @@
                 android:layout_height="32dp"
                 android:text="@string/nature"
                 android:textSize="14sp"
-                android:background="@drawable/filter_org_btn"
+                android:background="@drawable/selectable_filter_bt"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:layout_marginEnd="8dp" />
@@ -76,7 +76,7 @@
                 android:layout_height="32dp"
                 android:text="@string/city"
                 android:textSize="14sp"
-                android:background="@drawable/filter_btn"
+                android:background="@drawable/selectable_filter_bt"
                 android:textColor="@color/black"
                 android:layout_marginEnd="8dp" />
 
@@ -86,7 +86,7 @@
                 android:layout_height="32dp"
                 android:text="@string/museum"
                 android:textSize="14sp"
-                android:background="@drawable/filter_btn"
+                android:background="@drawable/selectable_filter_bt"
                 android:textColor="@color/black"
                 android:layout_marginEnd="8dp" />
 
@@ -96,7 +96,7 @@
                 android:layout_height="32dp"
                 android:text="@string/shop"
                 android:textSize="14sp"
-                android:background="@drawable/filter_btn"
+                android:background="@drawable/selectable_filter_bt"
                 android:textColor="@color/black"
                 android:layout_marginEnd="8dp" />
 
@@ -106,7 +106,7 @@
                 android:layout_height="32dp"
                 android:text="@string/around_me"
                 android:textSize="14sp"
-                android:background="@drawable/filter_btn"
+                android:background="@drawable/selectable_filter_bt"
                 android:textColor="@color/black" />
 
         </LinearLayout>

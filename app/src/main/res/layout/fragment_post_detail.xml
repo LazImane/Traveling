@@ -77,7 +77,8 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="-24dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="6dp">
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="@color/white">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -123,23 +124,6 @@
                             android:textStyle="bold"
                             android:textColor="@color/black" />
                     </LinearLayout>
-
-                    <!-- Like button on the right of the date row -->
-                    <ImageView
-                        android:id="@+id/btnLike"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/ic_heart"
-                        android:contentDescription="Like" />
-
-                    <TextView
-                        android:id="@+id/tvLikeCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:textSize="14sp"
-                        android:textColor="@color/black"
-                        android:text="0" />
 
                 </LinearLayout>
 

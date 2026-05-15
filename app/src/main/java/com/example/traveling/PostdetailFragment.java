@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/**TODO : COMMENTS + SIGNALER + FIX LIKES**/
+/**TODO : COMMENTS + SIGNALER + LIKES + Open MAP**/
 public class PostdetailFragment extends Fragment {
 
     private static final String ARG_POST_ID = "post_id";
@@ -40,8 +40,7 @@ public class PostdetailFragment extends Fragment {
     private TextView tvDetailTitle, tvDetailAddress, tvDetailDate,
             tvDetailLocation, tvDetailAuthor, tvDetailGroup, tvDetailNarrative;
     private ChipGroup chipGroupDetailTags;
-    private ImageView btnBack, btnLike;
-    private TextView tvLikeCount;
+    private ImageView btnBack;
     private LinearLayout rowLocation, rowGroup;
 
     public PostdetailFragment() {}
@@ -85,8 +84,6 @@ public class PostdetailFragment extends Fragment {
         tvDetailNarrative   = rootView.findViewById(R.id.tvDetailNarrative);
         chipGroupDetailTags = rootView.findViewById(R.id.chipGroupDetailTags);
         btnBack             = rootView.findViewById(R.id.btnBack);
-        btnLike             = rootView.findViewById(R.id.btnLike);
-        tvLikeCount         = rootView.findViewById(R.id.tvLikeCount);
         rowLocation         = rootView.findViewById(R.id.rowLocation);
         rowGroup            = rootView.findViewById(R.id.rowGroup);
 
@@ -185,10 +182,6 @@ public class PostdetailFragment extends Fragment {
             rowGroup.setVisibility(View.GONE);
         }
 
-        // Likes
-        tvLikeCount.setText(String.valueOf(post.getLikes()));
-        btnLike.setOnClickListener(v -> handleLike());
-
         // Tags
         chipGroupDetailTags.removeAllViews();
         if (post.getTags() != null) {
@@ -263,25 +256,5 @@ public class PostdetailFragment extends Fragment {
                     }
                 })
                 .addOnFailureListener(e -> rowGroup.setVisibility(View.GONE));
-    }
-
-    private void handleLike() {
-        if (mainActivity.mAuth.getCurrentUser() == null) {
-            Toast.makeText(getContext(), "Sign in to like posts", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        long newLikes = post.getLikes() + 1;
-        post.setLikes(newLikes);
-        tvLikeCount.setText(String.valueOf(newLikes));
-
-        mainActivity.db.collection("posts")
-                .document(post.getFirestoreId())
-                .update("likes", FieldValue.increment(1))
-                .addOnFailureListener(e -> {
-                    post.setLikes(newLikes - 1);
-                    tvLikeCount.setText(String.valueOf(newLikes - 1));
-                    Toast.makeText(getContext(), "Could not update like", Toast.LENGTH_SHORT).show();
-                });
     }
 }

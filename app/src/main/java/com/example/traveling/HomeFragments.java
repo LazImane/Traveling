@@ -23,7 +23,9 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**TODO : IMPLEMENT GPS FOR FILTER AROUND ME*/
 
@@ -238,35 +240,93 @@ public class HomeFragments extends Fragment {
         com.google.firebase.Timestamp ts = doc.getTimestamp("timestamp");
         if (ts != null) item.setTimestampMillis(ts.toDate().getTime());
 
-        // Image URL from Firebase Storage (works on any device)
+        // Image URL from Firebase Storage
         item.setImageUri(doc.getString("imageUrl"));
+
+        // Check if current user already liked this post
+        String uid = mainActivity.mAuth.getCurrentUser() != null
+                ? mainActivity.mAuth.getCurrentUser().getUid() : null;
+        if (uid != null) {
+            mainActivity.db.collection("liked_by")
+                    .whereEqualTo("postId", doc.getId())
+                    .whereEqualTo("userId", uid)
+                    .get()
+                    .addOnSuccessListener(qs -> {
+                        item.setLikedByMe(!qs.isEmpty());
+                        // Notify adapter to refresh just this item's button state
+                        int pos = allPosts.indexOf(item);
+                        if (pos >= 0) adapter.notifyItemChanged(pos, "likes");
+                    });
+        }
+
 
         return item;
     }
 
     //like button logic
     private void handleLike(PostItem post, int position) {
-        FirebaseUser user = mainActivity.mAuth.getCurrentUser();
-        if (user == null) {
+        String uid = mainActivity.mAuth.getCurrentUser() != null
+                ? mainActivity.mAuth.getCurrentUser().getUid() : null;
+        if (uid == null) {
             Toast.makeText(getContext(), "Sign in to like posts", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Optimistic UI update
-        long newLikes = post.getLikes() + 1;
-        post.setLikes(newLikes);
-        adapter.updateLikes(position, newLikes);
+        if (post.isLikedByMe()) {
+            // --- UNLIKE ---
+            // Optimistic UI
+            post.setLikedByMe(false);
+            post.setLikes(post.getLikes() - 1);
+            adapter.updateLikes(position, post.getLikes());
+            adapter.notifyItemChanged(position);
 
-        // Persist increment to Firestore
-        mainActivity.db.collection("posts")
-                .document(post.getFirestoreId())
-                .update("likes", FieldValue.increment(1))
-                .addOnFailureListener(e -> {
-                    // Roll back on failure
-                    post.setLikes(newLikes - 1);
-                    adapter.updateLikes(position, newLikes - 1);
-                    Toast.makeText(getContext(), "Could not update like", Toast.LENGTH_SHORT).show();
-                });
+            // Remove liked_by document
+            mainActivity.db.collection("liked_by")
+                    .whereEqualTo("postId", post.getFirestoreId())
+                    .whereEqualTo("userId", uid)
+                    .get()
+                    .addOnSuccessListener(qs -> {
+                        for (DocumentSnapshot doc : qs) doc.getReference().delete();
+                    })
+                    .addOnFailureListener(e -> {
+                        // Roll back
+                        post.setLikedByMe(true);
+                        post.setLikes(post.getLikes() + 1);
+                        adapter.updateLikes(position, post.getLikes());
+                    });
+
+            // Decrement counter on the post
+            mainActivity.db.collection("posts")
+                    .document(post.getFirestoreId())
+                    .update("likes", FieldValue.increment(-1));
+
+        } else {
+            // --- LIKE ---
+            // Optimistic UI
+            post.setLikedByMe(true);
+            post.setLikes(post.getLikes() + 1);
+            adapter.updateLikes(position, post.getLikes());
+            adapter.notifyItemChanged(position);
+
+            // Write liked_by document
+            Map<String, Object> likeDoc = new HashMap<>();
+            likeDoc.put("postId", post.getFirestoreId());
+            likeDoc.put("userId", uid);
+
+            mainActivity.db.collection("liked_by").document()
+                    .set(likeDoc)
+                    .addOnFailureListener(e -> {
+                        // Roll back
+                        post.setLikedByMe(false);
+                        post.setLikes(post.getLikes() - 1);
+                        adapter.updateLikes(position, post.getLikes());
+                    });
+
+            // Increment counter on the post
+            mainActivity.db.collection("posts")
+                    .document(post.getFirestoreId())
+                    .update("likes", FieldValue.increment(1));
+        }
     }
 
     private void openPostDetail(PostItem post) {
