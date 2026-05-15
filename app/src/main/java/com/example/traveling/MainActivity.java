@@ -29,10 +29,6 @@ public class MainActivity extends AppCompatActivity {
     //Firebase
     FirebaseAuth mAuth;
     FirebaseFirestore db;
-
-    //local database storage
-    DataBaseHelper dbHelper;
-
     FirebaseUser user;
 
     private static final int REQUEST_CODE_PERMISSIONS = 100;
@@ -74,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         navNotifications    = findViewById(R.id.navNotifications);
         mAuth               = FirebaseAuth.getInstance();
         db                  = FirebaseFirestore.getInstance();
-        dbHelper            = new DataBaseHelper(this);
         user                = mAuth.getCurrentUser();
     }
 

@@ -3,17 +3,17 @@ package com.example.traveling;
 import java.util.List;
 
 /**
- This class merges a Firestore document with the image URI stored in SQLite. thus making a singular post
-
- TODO : add comments maybe
+ Represents a single post, mapping Firestore document fields + Firebase Storage image URL.
  */
 public class PostItem {
 
     private String firestoreId;
     private String authorId;
+    private String title;
     private String description;
     private String address;
-    private String group;
+    private String groupId;
+    private String groupName;
     private boolean isPublic;
     private boolean isAnonymous;
     private long likes;
@@ -28,16 +28,22 @@ public class PostItem {
 
     public String getAuthorId()                 { return authorId; }
     public void setAuthorId(String authorId)    { this.authorId = authorId; }
-
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
     public String getDescription()              { return description; }
     public void setDescription(String d)        { this.description = d; }
 
     public String getAddress()                  { return address; }
     public void setAddress(String a)            { this.address = a; }
 
-    public String getGroup()                    { return group; }
-    public void setGroup(String g)              { this.group = g; }
-
+    public String getGroupId()                    { return groupId; }
+    public void setGroupId(String g)              { this.groupId = g; }
+    public String getGroupName() {
+        return groupName;
+    }
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
     public boolean isPublic()                   { return isPublic; }
     public void setPublic(boolean pub)          { this.isPublic = pub; }
 

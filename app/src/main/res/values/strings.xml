@@ -36,7 +36,7 @@
     <string name="auth_failed"> Authorization Failed</string>
     <string name="profile_create_failed">Failed to create profile</string>
     <string name="load_profile_failed">Failed to load profile</string>
-
+    <string name="anonymous">Anonymous</string>
     <string name="back">Back</string>
 
     <string name="search_hint">Search locations, themes, or authors...</string>
@@ -55,6 +55,8 @@
     <string name="saveFail">Failed to update profile.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="join">join</string>
+    <string name="title">Title</string>
     <!--<string name=""></string>-->
     <!--            <string name=""></string>                 -->
 

@@ -35,11 +35,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class PostFragment extends Fragment {
 
     //views
     ImageView ivPostIm;
-    EditText etDescription, etTag, etAddress, etGroup;
+    EditText etTitle, etDescription, etTag, etAddress, etGroup;
     ImageButton ibVoiceDesc, ibAiTag;
     TextView tvAddTag;
     ChipGroup chipGroupTags;
@@ -90,6 +91,7 @@ public class PostFragment extends Fragment {
 
     private void init() {
         ivPostIm        = view.findViewById(R.id.ivPostImage);
+        etTitle         = view.findViewById(R.id.etTitle);
         etDescription   = view.findViewById(R.id.etDescription);
         etTag           = view.findViewById(R.id.etTag);
         etAddress       = view.findViewById(R.id.etAddress);
@@ -117,8 +119,44 @@ public class PostFragment extends Fragment {
         ibVoiceDesc.setOnClickListener(v ->
                 Toast.makeText(getContext(), "Voice input coming soon", Toast.LENGTH_SHORT).show());
 
-        cbPublic.setOnCheckedChangeListener((btn, checked) -> { if (checked) cbPrivate.setChecked(false); });
-        cbPrivate.setOnCheckedChangeListener((btn, checked) -> { if (checked) cbPublic.setChecked(false); });
+        cbPublic.setOnClickListener(v -> {
+            cbPublic.setChecked(true);
+            cbPrivate.setChecked(false);
+        });
+
+        cbPrivate.setOnClickListener(v -> {
+
+            // cannot make private without group
+            if (TextUtils.isEmpty(etGroup.getText().toString().trim())) {
+
+                Toast.makeText(
+                        getContext(),
+                        "Private posts require a group",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                cbPrivate.setChecked(false);
+                cbPublic.setChecked(true);
+
+                return;
+            }
+
+            cbPrivate.setChecked(true);
+            cbPublic.setChecked(false);
+        });
+
+        etGroup.setOnFocusChangeListener((v, hasFocus) -> {
+
+            if (!hasFocus) {
+
+                String group = etGroup.getText().toString().trim();
+
+                if (!TextUtils.isEmpty(group)) {
+                    cbPrivate.setChecked(true);
+                    cbPublic.setChecked(false);
+                }
+            }
+        });
 
         btnPost.setOnClickListener(v -> handlePost());
     }
@@ -197,34 +235,114 @@ public class PostFragment extends Fragment {
     }
 
     private void savePostToFirestore(FirebaseUser user, String imageUrl) {
+        String title = etTitle.getText().toString().trim();
         String description = etDescription.getText().toString().trim();
         String address     = etAddress.getText().toString().trim();
-        String group       = etGroup.getText().toString().trim();
-        boolean isPublic   = cbPublic.isChecked();
+        String groupName = etGroup.getText().toString().trim();
+
+        if (TextUtils.isEmpty(title)) {
+            btnPost.setEnabled(true);
+            Toast.makeText(getContext(), "Title is required", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // If no group -> public post
+        if (TextUtils.isEmpty(groupName)) {
+            createPost(user, imageUrl, null, null,true);
+            return;
+        }
+
+        // Group exists -> fetch its ID
+        mainActivity.db.collection("groups")
+                .whereEqualTo("name", groupName)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+
+                    if (queryDocumentSnapshots.isEmpty()) {
+
+                        btnPost.setEnabled(true);
+
+                        Toast.makeText(
+                                getContext(),
+                                "Group does not exist",
+                                Toast.LENGTH_LONG
+                        ).show();
+
+                        return;
+                    }
+
+                    String groupId = queryDocumentSnapshots
+                            .getDocuments()
+                            .get(0)
+                            .getId();
+
+                    // group post = automatically private
+                    createPost(user, imageUrl, groupId, groupName,false);
+                })
+                .addOnFailureListener(e -> {
+
+                    btnPost.setEnabled(true);
+
+                    Toast.makeText(
+                            getContext(),
+                            "Failed to validate group",
+                            Toast.LENGTH_LONG
+                    ).show();
+                });
+    }
+
+    private void createPost(
+            FirebaseUser user,
+            String imageUrl,
+            String groupId,
+            String groupName,
+            boolean isPublic
+    ) {
+
+        String title       = etTitle.getText().toString().trim();
+        String description = etDescription.getText().toString().trim();
+        String address     = etAddress.getText().toString().trim();
 
         Map<String, Object> post = new HashMap<>();
-        post.put("authorId",    user.getUid());
+
+        post.put("authorId", user.getUid());
+        post.put("title", title);
         post.put("description", description);
-        post.put("tags",        new ArrayList<>(tags));
-        post.put("address",     address);
-        post.put("group",       TextUtils.isEmpty(group) ? null : group);
-        post.put("isPublic",    isPublic);
+        post.put("tags", new ArrayList<>(tags));
+        post.put("address", address);
+
+        // null if public post
+        post.put("groupId", groupId);
+        post.put("groupName", groupName);
+
+        post.put("isPublic", isPublic);
         post.put("isAnonymous", user.isAnonymous());
-        post.put("likes",       0);
-        post.put("imageUrl",    imageUrl);
-        post.put("timestamp",   Timestamp.now());
+        post.put("likes", 0);
+        post.put("imageUrl", imageUrl);
+        post.put("timestamp", Timestamp.now());
 
         mainActivity.db.collection("posts")
                 .add(post)
                 .addOnSuccessListener(docRef -> {
-                    Toast.makeText(getContext(), getString(R.string.post_success), Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(
+                            getContext(),
+                            getString(R.string.post_success),
+                            Toast.LENGTH_SHORT
+                    ).show();
+
                     resetForm();
                 })
                 .addOnFailureListener(e -> {
+
                     btnPost.setEnabled(true);
-                    Toast.makeText(getContext(),
+
+                    Toast.makeText(
+                            getContext(),
                             getString(R.string.post_failed) + ": " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_LONG
+                    ).show();
                 });
     }
 
@@ -233,6 +351,7 @@ public class PostFragment extends Fragment {
     private void resetForm() {
         selectedImageUri = null;
         ivPostIm.setImageResource(R.drawable.post_frame);
+        etTitle.setText("");
         etDescription.setText("");
         etTag.setText("");
         etAddress.setText("");
