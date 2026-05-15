@@ -83,6 +83,8 @@
     <string name="LOCATION">LOCATION</string>
     <string name="DATE_TAKEN">DATE TAKEN</string>
     <string name="POSTED_ON">POSTED ON</string>
+    <string name="REPORT">Report</string>
+    <string name="Loc">Location</string>
     <!-- ============================= TRAVEL PATH ===================================-->
     <string name="activities">Activities</string>
     <string name="discovery">Discovery</string>
@@ -112,4 +114,8 @@
     <string name="groupName">enter a group name</string>
     <string name="create_group">+ Create Group</string>
     <string name="my_mail">titouan.guibertlode@free.fr</string>
+    <string name="connect_to_report">Connect to report the post</string>
+    <string name="already_reported">You have already reported this post</string>
+    <string name="post_reported">Post Reported</string>
+    <string name="report_fail">Failed to report the post, please try again</string>
 </resources>

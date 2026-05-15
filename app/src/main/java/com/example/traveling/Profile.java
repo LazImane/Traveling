@@ -14,10 +14,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +35,7 @@ public class Profile extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseFirestore db;
     FirebaseUser user;
+    FirebaseStorage storage;
     Uri selectedImageUri = null;
 
     ActivityResultLauncher<String> imagePickerLauncher;
@@ -45,7 +49,10 @@ public class Profile extends AppCompatActivity {
                 uri -> {
                     if (uri != null) {
                         selectedImageUri = uri;
-                        ivPfp.setImageURI(uri);
+                        Glide.with(Profile.this)
+                                .load(uri)
+                                .placeholder(R.drawable.post_frame)
+                                .into(ivPfp);
                     }
                 });
         init();
@@ -64,6 +71,7 @@ public class Profile extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db    = FirebaseFirestore.getInstance();
         user  = mAuth.getCurrentUser();
+        storage = FirebaseStorage.getInstance();
     }
     private void loadUserData() {
         if (user == null) return;
@@ -79,7 +87,12 @@ public class Profile extends AppCompatActivity {
                         }
                         String photoUrl = doc.getString("photoUrl");
                         if (!TextUtils.isEmpty(photoUrl) && selectedImageUri == null) {
-                            ivPfp.setImageURI(Uri.parse(photoUrl));
+
+                            Glide.with(Profile.this)
+                                    .load(photoUrl)
+                                    .placeholder(R.drawable.post_frame)
+                                    .error(R.drawable.post_frame)
+                                    .into(ivPfp);
                         }
                     }
                 })
@@ -108,7 +121,48 @@ public class Profile extends AppCompatActivity {
         updates.put("username", username);
 
         if (selectedImageUri != null) {
-            updates.put("photoUrl", selectedImageUri.toString());
+
+            StorageReference storageRef = storage.getReference()
+                    .child("profile_pictures")
+                    .child(user.getUid() + ".jpg");
+
+            storageRef.putFile(selectedImageUri)
+                    .continueWithTask(task -> {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
+                        return storageRef.getDownloadUrl();
+                    })
+                    .addOnSuccessListener(uri -> {
+
+                        updates.put("photoUrl", uri.toString());
+
+                        DocumentReference userRef =
+                                db.collection("users").document(user.getUid());
+
+                        userRef.update(updates)
+                                .addOnSuccessListener(unused -> {
+                                    btnSave.setEnabled(true);
+                                    Toast.makeText(this,
+                                            getString(R.string.saveChanges),
+                                            Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> {
+                                    btnSave.setEnabled(true);
+                                    Toast.makeText(this,
+                                            getString(R.string.saveFail),
+                                            Toast.LENGTH_SHORT).show();
+                                });
+
+                    })
+                    .addOnFailureListener(e -> {
+                        btnSave.setEnabled(true);
+                        Toast.makeText(this,
+                                "Image upload failed",
+                                Toast.LENGTH_SHORT).show();
+                    });
+
+            return;
         }
 
         DocumentReference userRef = db.collection("users").document(user.getUid());

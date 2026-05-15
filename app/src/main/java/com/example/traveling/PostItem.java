@@ -20,6 +20,7 @@ public class PostItem {
     private List<String> tags;
     private String imageUri;
     private long timestampMillis;
+    private boolean likedByMe = false;
 
     public PostItem() {}
 
@@ -62,4 +63,6 @@ public class PostItem {
 
     public long getTimestampMillis()            { return timestampMillis; }
     public void setTimestampMillis(long ms)     { this.timestampMillis = ms; }
+    public boolean isLikedByMe()              { return likedByMe; }
+    public void setLikedByMe(boolean liked)   { this.likedByMe = liked; }
 }

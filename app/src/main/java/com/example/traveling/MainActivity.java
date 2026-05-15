@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         init();
         setupUI();
         setListeners();
+        listenToUserProfile();
         replaceFragment(new HomeFragments());
         fn_group_modified(navHome);
     }
@@ -115,6 +117,29 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, Profile.class);
             startActivity(intent);
         }
+    }
+
+    private void listenToUserProfile() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null || user.isAnonymous()) return;
+
+        db.collection("users")
+                .document(user.getUid())
+                .addSnapshotListener((doc, e) -> {
+                    if (e != null || doc == null || !doc.exists()) return;
+
+                    String photoUrl = doc.getString("photoUrl");
+
+                    if (photoUrl != null && !photoUrl.isEmpty()) {
+                        Glide.with(this)
+                                .load(photoUrl)
+                                .placeholder(R.drawable.ic_guest_avatar)
+                                .circleCrop()
+                                .into(btnProfile);
+                    } else {
+                        btnProfile.setImageResource(R.drawable.ic_guest_avatar);
+                    }
+                });
     }
 
     public void fn_home(){
