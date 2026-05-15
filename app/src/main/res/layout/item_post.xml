@@ -79,7 +79,7 @@
 
         <!-- Description -->
         <TextView
-            android:id="@+id/tvDescription"
+            android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="14dp"

@@ -40,7 +40,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 .inflate(R.layout.item_post, parent, false);
         return new PostViewHolder(v);
     }// creates empty view holders which is the equivalent of an empty frame
-    //inflater converts xml into a views object
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder h, int position) {
@@ -61,9 +60,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             h.tvAddress.setVisibility(View.GONE);
         }
 
-        // Description used as the card "title"
-        String desc = post.getDescription();
-        h.tvDescription.setText((desc != null && !desc.isEmpty()) ? desc : "");
+        // Title
+        String title = post.getTitle();
+
+        if (title != null && !title.isEmpty()) {
+            h.tvTitle.setVisibility(View.VISIBLE);
+            h.tvTitle.setText(title);
+        } else {
+            h.tvTitle.setVisibility(View.GONE);
+        }
 
         // Likes
         h.tvLikeCount.setText(formatCount(post.getLikes()));
@@ -116,6 +121,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     static class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView  ivPostImage;
         TextView   tvAddress;
+        TextView tvTitle;
         TextView   tvDescription;
         ImageView  btnLike;
         TextView   tvLikeCount;
@@ -125,7 +131,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             super(itemView);
             ivPostImage   = itemView.findViewById(R.id.ivPostImage);
             tvAddress     = itemView.findViewById(R.id.tvAddress);
-            tvDescription = itemView.findViewById(R.id.tvDescription);
+            tvTitle = itemView.findViewById(R.id.tvTitle);
             btnLike       = itemView.findViewById(R.id.btnLike);
             tvLikeCount   = itemView.findViewById(R.id.tvLikeCount);
             chipGroupTags = itemView.findViewById(R.id.chipGroupTags);

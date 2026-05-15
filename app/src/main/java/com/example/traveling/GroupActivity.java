@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +56,7 @@ public class GroupActivity extends AppCompatActivity {
     private void init() {
         btnBack    = findViewById(R.id.btnBack);
         btnEditP   = findViewById(R.id.btnEditPicture);
-        etGroupN    = findViewById(R.id.etGroupName);
+        etGroupN   = findViewById(R.id.etGroupName);
         btnSave    = findViewById(R.id.btnSave);
 
         mAuth = FirebaseAuth.getInstance();
@@ -78,37 +80,66 @@ public class GroupActivity extends AppCompatActivity {
 
         btnSave.setEnabled(false);
 
-        Map<String, Object> groupData = new HashMap<>();
-        groupData.put("name", groupName);
+        DocumentReference groupRef = db.collection("groups").document();
 
         if (selectedImageUri != null) {
-            groupData.put("picture_url", selectedImageUri.toString());
+            // 1. Upload image to Firebase Storage
+            String fileName = user.getUid() + "_" + System.currentTimeMillis() + ".jpg";
+            StorageReference imageRef = FirebaseStorage.getInstance()
+                    .getReference("group_images/" + groupRef.getId() + "/" + fileName);
+
+            imageRef.putFile(selectedImageUri)
+                    .continueWithTask(task -> {
+                        if (!task.isSuccessful()) throw task.getException();
+                        // 2. Get the public download URL
+                        return imageRef.getDownloadUrl();
+                    })
+                    .addOnSuccessListener(downloadUri -> {
+                        // 3. Save group with real image URL
+                        saveGroupToFirestore(groupRef, groupName, downloadUri.toString());
+                    })
+                    .addOnFailureListener(e -> {
+                        btnSave.setEnabled(true);
+                        Toast.makeText(this, "Image upload failed: " + e.getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    });
+        } else {
+            // No image selected — save without one
+            saveGroupToFirestore(groupRef, groupName, null);
         }
+    }
 
-
-        DocumentReference groupRef = db.collection("groups").document();
+    private void saveGroupToFirestore(DocumentReference groupRef,
+                                      String groupName,
+                                      String photoUrl) {
+        Map<String, Object> groupData = new HashMap<>();
+        groupData.put("name",     groupName);
+        groupData.put("photoUrl", photoUrl != null ? photoUrl : "");
 
         groupRef.set(groupData)
                 .addOnSuccessListener(unused -> {
-                    btnSave.setEnabled(true);
+                    // 4. Only link the user AFTER the group doc exists
+                    linkUserToGroup(groupRef.getId());
                 })
                 .addOnFailureListener(e -> {
                     btnSave.setEnabled(true);
+                    Toast.makeText(this, "Failed to create group: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
                 });
+    }
 
+    private void linkUserToGroup(String groupId) {
         Map<String, Object> groupLinker = new HashMap<>();
-        groupLinker.put("group_id", groupRef.getId());
-        groupLinker.put("user_id", user.getUid());
+        groupLinker.put("group_id", groupId);
+        groupLinker.put("user_id",  user.getUid());
 
-        DocumentReference groupLinkRef = db.collection("groups_to_users_link").document();
-
-        groupLinkRef.set(groupLinker)
-                .addOnSuccessListener(unused -> {
-                    btnSave.setEnabled(true);
-                })
+        db.collection("groups_to_users_link").document()
+                .set(groupLinker)
+                .addOnSuccessListener(unused -> finish())
                 .addOnFailureListener(e -> {
                     btnSave.setEnabled(true);
+                    Toast.makeText(this, "Failed to join group: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
                 });
-        finish();
     }
 }

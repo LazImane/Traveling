@@ -25,6 +25,8 @@ import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
 import java.util.List;
 
+/**TODO : IMPLEMENT GPS FOR FILTER AROUND ME*/
+
 public class HomeFragments extends Fragment {
     EditText etSearch;
     Button filterNature, filterCity, filterMuseums, filterShops, filterAround;
@@ -79,7 +81,7 @@ public class HomeFragments extends Fragment {
         adapter = new PostAdapter(displayedPosts, new PostAdapter.OnPostClickListener() {
             @Override
             public void onPostClick(PostItem post) {
-                //openPostDetail(post);
+                openPostDetail(post);
             }
             @Override
             public void onLikeClick(PostItem post, int position) {
@@ -140,11 +142,17 @@ public class HomeFragments extends Fragment {
                 if (tag.toLowerCase().contains(filter.toLowerCase())) return true;
             }
         }
-        // Also check description and address
+        // Also check description and address and the title
         String desc = post.getDescription();
         if (desc != null && desc.toLowerCase().contains(filter.toLowerCase())) return true;
         String addr = post.getAddress();
         if (addr != null && addr.toLowerCase().contains(filter.toLowerCase())) return true;
+        String title = post.getTitle();
+
+        if (title != null &&
+                title.toLowerCase().contains(filter.toLowerCase())) {
+            return true;
+        }
 
         return false;
     }
@@ -152,6 +160,14 @@ public class HomeFragments extends Fragment {
     private boolean matchesSearch(PostItem post, String query) {
         if (query.isEmpty()) return true;
         String q = query.toLowerCase();
+        if (post.getTitle() != null &&
+                post.getTitle().toLowerCase().contains(q)) {
+            return true;
+        }
+        if (post.getGroupName() != null &&
+                post.getGroupName().toLowerCase().contains(q)) {
+            return true;
+        }
         if (post.getDescription() != null && post.getDescription().toLowerCase().contains(q)) return true;
         if (post.getAddress()     != null && post.getAddress().toLowerCase().contains(q))     return true;
         if (post.getTags() != null) {
@@ -208,7 +224,8 @@ public class HomeFragments extends Fragment {
         item.setAuthorId(doc.getString("authorId"));
         item.setDescription(doc.getString("description"));
         item.setAddress(doc.getString("address"));
-        item.setGroup(doc.getString("group"));
+        item.setGroupId(doc.getString("groupId"));
+        item.setGroupName(doc.getString("groupName"));
         Boolean pub = doc.getBoolean("isPublic");
         item.setPublic(pub != null && pub);
         Boolean anon = doc.getBoolean("isAnonymous");
@@ -252,20 +269,19 @@ public class HomeFragments extends Fragment {
                 });
     }
 
-    //open post details TODO
-//    private void openPostDetail(PostItem post) {
-//        PostDetailFragment detail = PostDetailFragment.newInstance(post);
-//        requireActivity().getSupportFragmentManager()
-//                .beginTransaction()
-//                .setCustomAnimations(
-//                        R.anim.slide_in_right,
-//                        R.anim.slide_out_left,
-//                        R.anim.slide_in_left,
-//                        R.anim.slide_out_right)
-//                .replace(R.id.fragment_container, detail)   // adjust ID to match your activity
-//                .addToBackStack(null)
-//                .commit();
-//    }
+    private void openPostDetail(PostItem post) {
+        PostdetailFragment detail = PostdetailFragment.newInstance(post);
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_in_right,
+                        R.anim.slide_out_left,
+                        R.anim.slide_in_left,
+                        R.anim.slide_out_right)
+                .replace(R.id.fragmentLayout, detail)
+                .addToBackStack(null)
+                .commit();
+    }
 
 
     //filter button styles
