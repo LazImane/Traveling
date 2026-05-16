@@ -128,7 +128,13 @@ public class GroupsFragment extends Fragment {
         groups.put(newGroup, groupId);
 
         View group_button = newGroup.findViewById(R.id.group_button);
-        group_button.setOnClickListener(v -> activity.fn_home());
+        group_button.setOnClickListener(v ->
+                activity.db.collection("groups").document(groupId).get()
+                        .addOnSuccessListener(doc -> {
+                            String name = doc.exists() ? doc.getString("name") : groupId;
+                            openGroupFeed(groupId, name);
+                        })
+                        .addOnFailureListener(e -> openGroupFeed(groupId, groupId)));
 
         ImageView ivGroupPhoto = newGroup.findViewById(R.id.ivGroupPhoto);
 
@@ -197,7 +203,6 @@ public class GroupsFragment extends Fragment {
         PopupMenu menu = new PopupMenu(requireContext(), v);
         menu.getMenuInflater().inflate(R.menu.menu_delete, menu.getMenu());
 
-        // Show/hide menu items based on membership
         if (isMember) {
             menu.getMenu().findItem(R.id.action_delete).setVisible(true);
             menu.getMenu().findItem(R.id.action_join).setVisible(false);
@@ -353,7 +358,7 @@ public class GroupsFragment extends Fragment {
         TextView tvNotif = card.findViewById(R.id.groupNotification);
         View optionsBtn = card.findViewById(R.id.options);
 
-        optionsBtn.setVisibility(View.VISIBLE); // Show options for join
+        optionsBtn.setVisibility(View.VISIBLE);
         tvNotif.setVisibility(View.GONE);
 
         tvName.setText(doc.getString("name"));
@@ -364,7 +369,6 @@ public class GroupsFragment extends Fragment {
                 .addOnSuccessListener(qs ->
                         tvCount.setText(qs.size() + " members"));
 
-        // Set popup menu for search results (always shows Join)
         optionsBtn.setOnClickListener(v -> {
             PopupMenu menu = new PopupMenu(requireContext(), v);
             menu.getMenuInflater().inflate(R.menu.menu_delete, menu.getMenu());
@@ -396,5 +400,14 @@ public class GroupsFragment extends Fragment {
         } else {
             target.setImageResource(R.drawable.post_frame);
         }
+    }
+
+    private void openGroupFeed(String groupId, String groupName) {
+        HomeFragments home = HomeFragments.newInstanceWithGroup(groupId, groupName);
+        activity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentLayout, home)
+                .addToBackStack(null)
+                .commit();
     }
 }

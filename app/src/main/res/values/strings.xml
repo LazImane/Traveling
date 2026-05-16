@@ -55,7 +55,7 @@
     <string name="saveFail">Failed to update profile.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="join">join</string>
+    <string name="join">Join</string>
     <string name="title">Title</string>
     <!--<string name=""></string>-->
     <!--            <string name=""></string>                 -->
@@ -78,6 +78,11 @@
     <string name="post_success">Posted!</string>
     <string name="post_failed">Post failed</string>
 
+    <string name="sign_in_like">Sign in to like posts</string>
+    <string name="no_address_available">No address available</string>
+    <string name="open_with">Open with…</string>
+    <string name="failed_load_post">Failed to load post: </string>
+
     <!-- ============================= POST DETAIL STRINGS ===================================-->
     <string name="CAPTURED_BY">CAPTURED BY</string>
     <string name="LOCATION">LOCATION</string>
@@ -85,6 +90,9 @@
     <string name="POSTED_ON">POSTED ON</string>
     <string name="REPORT">Report</string>
     <string name="Loc">Location</string>
+
+    <!-- ============================= GROUP STRINGS =================================-->
+    <string name="modify"> Modify </string>
     <!-- ============================= TRAVEL PATH ===================================-->
     <string name="activities">Activities</string>
     <string name="discovery">Discovery</string>
@@ -109,7 +117,7 @@
     <string name="find_group">Find your group...</string>
     <string name="my_groups">My Groups</string>
     <string name="notifications">Notifications</string>
-    <string name="delete">Delete</string>
+    <string name="leave_group">Leave</string>
     <string name="createGroup">Create New Group</string>
     <string name="groupName">enter a group name</string>
     <string name="create_group">+ Create Group</string>

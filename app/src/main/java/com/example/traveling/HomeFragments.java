@@ -14,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -47,6 +49,8 @@ public class HomeFragments extends Fragment {
     private final List<PostItem> displayedPosts = new ArrayList<>();
     private PostAdapter  adapter;
     private String activeFilter = null;
+    private String activeGroupId = null;
+    private String activeGroupName = null;
 
     public HomeFragments() {
         // Required empty public constructor
@@ -63,6 +67,11 @@ public class HomeFragments extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
+        mainActivity = (MainActivity) getContext();
+        if (getArguments() != null) {
+            activeGroupId   = getArguments().getString("groupId");
+            activeGroupName = getArguments().getString("groupName");
+        }
         init();
         setListeners();
         loadPosts();
@@ -186,6 +195,41 @@ public class HomeFragments extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
 
         Log.d("HomeFragments", "Starting to load posts...");
+
+        com.google.firebase.firestore.CollectionReference postsRef =
+                mainActivity.db.collection("posts");
+
+        com.google.firebase.firestore.Query query;
+        if (activeGroupId != null) {
+            query = postsRef.whereEqualTo("group", activeGroupId).limit(50);
+        } else {
+            query = postsRef.whereEqualTo("isPublic", true).limit(50);
+        }
+
+        query.get()
+                .addOnSuccessListener(querySnapshot -> {
+                    allPosts.clear();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        PostItem item = buildPostItem(doc);
+                        allPosts.add(item);
+                    }
+                    applySearchAndFilter(etSearch.getText().toString().trim(), activeFilter);
+                    progressBar.setVisibility(View.GONE);
+
+                    if (allPosts.isEmpty()) {
+                        Toast.makeText(getContext(),
+                                activeGroupId != null
+                                        ? "Aucun post dans ce groupe"
+                                        : "No posts found",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(),
+                            "Failed to load posts: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                });
 
         // Query: public posts limit 50 for now
         mainActivity.db.collection("posts")
@@ -360,6 +404,15 @@ public class HomeFragments extends Fragment {
             case "shops":    filterShops.setSelected(true);    break;
             case "around":   filterAround.setSelected(true);   break;
         }
+    }
+
+    public static HomeFragments newInstanceWithGroup(String groupId, String groupName) {
+        HomeFragments f = new HomeFragments();
+        Bundle args = new Bundle();
+        args.putString("groupId", groupId);
+        args.putString("groupName", groupName);
+        f.setArguments(args);
+        return f;
     }
 
 }
