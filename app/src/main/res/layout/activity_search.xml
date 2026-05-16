@@ -42,11 +42,12 @@
             android:text="@string/result_list"
             android:textColor="@color/white"
             android:textSize="28sp"/>
+
         <ImageView
             android:id="@+id/btn_reload"
             android:layout_width="32dp"
-            android:layout_height="44dp"
-            android:background="@drawable/reload_icon"/>
+            android:layout_height="35dp"
+            android:background="@drawable/reload_icon" />
 
     </LinearLayout>
 
