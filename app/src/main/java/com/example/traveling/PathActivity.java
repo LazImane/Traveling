@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -75,6 +76,7 @@ public class PathActivity extends AppCompatActivity {
             marker.setTitle((i + 1) + ". " + s.loc_name);  // "1. Louvre", "2. ..."
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             mapView.getOverlays().add(marker);
+            //add_entry(s.loc_name + " " + s.address);
         }
 
         // Center and zoom the map to fit all points
@@ -92,10 +94,14 @@ public class PathActivity extends AppCompatActivity {
         mapView           = findViewById(R.id.mapView);
     }
 
-
+    private void add_entry(String s){
+        TextView v = new TextView(this);
+        v.setText(s);
+        layout_results.addView(v);
+    }
     private void setListeners() {
         btn_back.setOnClickListener(v -> back());
-        layout_results.setOnClickListener(v -> export());
+        //layout_results.setOnClickListener(v -> export());
     }
 
 

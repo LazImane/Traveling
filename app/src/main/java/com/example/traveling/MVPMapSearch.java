@@ -115,6 +115,7 @@ public class MVPMapSearch {
 
             int responseCode = conn.getResponseCode();
             if (responseCode != 200) {
+                System.out.println("HTTP CODE: " + responseCode);
                 return null; // empty list if request failed
             }
 

@@ -7,6 +7,8 @@ public class SearchInfo implements Serializable {
     public double lon;
     public String loc_name;
 
+    //public String address = "";
+
     public int type = 0;
 
     public SearchInfo(double _lat, double _lon, String _loc_name){
