@@ -1,7 +1,9 @@
 package com.example.traveling;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.widget.ImageView;
@@ -76,7 +78,7 @@ public class PathActivity extends AppCompatActivity {
             marker.setTitle((i + 1) + ". " + s.loc_name);  // "1. Louvre", "2. ..."
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             mapView.getOverlays().add(marker);
-            //add_entry(s.loc_name + " " + s.address);
+            add_entry(s.loc_name + " " + s.address, s);
         }
 
         // Center and zoom the map to fit all points
@@ -94,11 +96,28 @@ public class PathActivity extends AppCompatActivity {
         mapView           = findViewById(R.id.mapView);
     }
 
-    private void add_entry(String s){
-        TextView v = new TextView(this);
-        v.setText(s);
-        layout_results.addView(v);
+    private void add_entry(String s, SearchInfo si){
+        TextView view = new TextView(this);
+        view.setText(s);
+        view.setPadding(10, 10, 10, 10);
+        view.setOnClickListener(v->openInGoogleMaps(si.lat, si.lon));
+        layout_results.addView(view);
     }
+
+    private void openInGoogleMaps(double lat, double lon) {
+        Uri uri = Uri.parse("geo:" + lat + "," + lon + "?q=" + lat + "," + lon);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.setPackage("com.google.android.apps.maps");
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            // Google Maps not installed — open in browser instead
+            Uri browserUri = Uri.parse("https://www.google.com/maps?q=" + lat + "," + lon);
+            startActivity(new Intent(Intent.ACTION_VIEW, browserUri));
+        }
+    }
+
     private void setListeners() {
         btn_back.setOnClickListener(v -> back());
         //layout_results.setOnClickListener(v -> export());

@@ -84,6 +84,43 @@ public class MVPMapSearch {
     }
 
 
+    public static String getAddress(Activity context, double lat, double lon) {
+        try {
+            String urlString = "https://nominatim.openstreetmap.org/reverse"
+                    + "?format=json"
+                    + "&lat=" + lat
+                    + "&lon=" + lon
+                    + "&zoom=18"
+                    + "&addressdetails=1";
+
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("User-Agent",
+                    "TravelingApp/1.0 (android student project - contact: "
+                            + context.getString(R.string.my_mail) + ")");
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+
+            System.out.println("HTTP CODE FOR GETADDRESS: " + conn.getResponseCode());
+            if (conn.getResponseCode() != 200) return null;
+
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) response.append(line);
+            reader.close();
+            conn.disconnect();
+
+            JSONObject json = new JSONObject(response.toString());
+            return json.optString("display_name", null);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public static void getCoordinates(Activity context, String location_name) {
 
@@ -114,10 +151,8 @@ public class MVPMapSearch {
             conn.setReadTimeout(5000);
 
             int responseCode = conn.getResponseCode();
-            if (responseCode != 200) {
-                System.out.println("HTTP CODE: " + responseCode);
-                return null; // empty list if request failed
-            }
+            System.out.println("HTTP CODE FOR GETCOORDINATES: " + responseCode);
+            if (responseCode != 200) return null;
 
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(conn.getInputStream())
@@ -183,7 +218,9 @@ public class MVPMapSearch {
             );
 
             int responseCode = conn.getResponseCode();
-            System.out.println("HTTP CODE: " + responseCode);
+            System.out.println("HTTP CODE FOR SEARCHPLACES: " + responseCode);
+            if(responseCode != 200) return null;
+
 
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(conn.getInputStream())
@@ -222,7 +259,9 @@ public class MVPMapSearch {
                     pLat = center.getDouble("lat");
                     pLon = center.getDouble("lon");
                 }
-                result.add(new SearchInfo(pLat, pLon, name));
+                SearchInfo si = new SearchInfo(pLat, pLon, name);
+                result.add(si);
+
             }
 
         } catch (Exception e) {
