@@ -83,6 +83,11 @@
     <string name="open_with">Open with…</string>
     <string name="failed_load_post">Failed to load post: </string>
 
+    <string name="no_posts_group">No posts in this group</string>
+    <string name="no_posts_found">No posts found</string>
+    <string name="failed_load_posts">Failed to load posts: </string>
+    <string name="no_posts_database">No posts found in database</string>
+
     <!-- ============================= POST DETAIL STRINGS ===================================-->
     <string name="CAPTURED_BY">CAPTURED BY</string>
     <string name="LOCATION">LOCATION</string>
@@ -126,4 +131,13 @@
     <string name="already_reported">You have already reported this post</string>
     <string name="post_reported">Post Reported</string>
     <string name="report_fail">Failed to report the post, please try again</string>
+    <string name="members">%1$d members</string>
+    <string name="group_load_failed">Failed to load groups</string>
+    <string name="search_failed">Search failed: %1$s</string>
+
+    <string name="joined_group">Joined %1$s!</string>
+    <string name="already_in_group">You\'re already in %1$s</string>
+
+    <string name="join_failed">Failed to join: %1$s</string>
+    <string name="left_group">Left group</string>
 </resources>

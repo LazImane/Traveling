@@ -116,7 +116,7 @@ public class PostdetailFragment extends Fragment {
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(getContext(),
-                                "Failed to load post: " + e.getMessage(),
+                                getString(R.string.failed_load_post) + e.getMessage(),
                                 Toast.LENGTH_SHORT).show());
     }
 
@@ -310,7 +310,7 @@ public class PostdetailFragment extends Fragment {
 
     private void handleLike() {
         if (currentUid == null) {
-            Toast.makeText(getContext(), "Sign in to like posts", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.sign_in_like), Toast.LENGTH_SHORT).show();
             return;
         }
         if (likedByMe) {
@@ -372,7 +372,7 @@ public class PostdetailFragment extends Fragment {
     private void openMaps() {
         String address = post.getAddress();
         if (address == null || address.isEmpty()) {
-            Toast.makeText(getContext(), "Pas d'adresse disponible",
+            Toast.makeText(getContext(), getString(R.string.no_address_available),
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -393,7 +393,7 @@ public class PostdetailFragment extends Fragment {
             startActivity(osmAnd);
         } else if (geo.resolveActivity(requireActivity().getPackageManager()) != null) {
             // Shows a chooser: OSMAnd, Google Maps, Waze, whatever is installed
-            startActivity(Intent.createChooser(geo, "Ouvrir avec…"));
+            startActivity(Intent.createChooser(geo, getString(R.string.open_with)));
         } else {
             // Guaranteed fallback — OSM in the browser
             startActivity(browser);

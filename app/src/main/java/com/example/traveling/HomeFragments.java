@@ -219,19 +219,18 @@ public class HomeFragments extends Fragment {
                     if (allPosts.isEmpty()) {
                         Toast.makeText(getContext(),
                                 activeGroupId != null
-                                        ? "Aucun post dans ce groupe"
-                                        : "No posts found",
+                                        ? getString(R.string.no_posts_group)
+                                        : getString(R.string.no_posts_found),
                                 Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(getContext(),
-                            "Failed to load posts: " + e.getMessage(),
+                            getString(R.string.failed_load_posts) + e.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 });
 
-        // Query: public posts limit 50 for now
         mainActivity.db.collection("posts")
                 .whereEqualTo("isPublic", true)
                 //.orderBy("timestamp", Query.Direction.DESCENDING)
@@ -249,7 +248,7 @@ public class HomeFragments extends Fragment {
                     progressBar.setVisibility(View.GONE);
 
                     if (allPosts.isEmpty()) {
-                        Toast.makeText(getContext(), "No posts found in database", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.no_posts_database), Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -312,7 +311,7 @@ public class HomeFragments extends Fragment {
         String uid = mainActivity.mAuth.getCurrentUser() != null
                 ? mainActivity.mAuth.getCurrentUser().getUid() : null;
         if (uid == null) {
-            Toast.makeText(getContext(), "Sign in to like posts", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.sign_in_like), Toast.LENGTH_SHORT).show();
             return;
         }
 

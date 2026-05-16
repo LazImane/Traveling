@@ -118,7 +118,7 @@ public class GroupsFragment extends Fragment {
 
             })
             .addOnFailureListener(e -> {
-                Toast.makeText(activity, "Failed to load groups", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, getString(R.string.group_load_failed), Toast.LENGTH_SHORT).show();
             });
     }
 
@@ -237,7 +237,7 @@ public class GroupsFragment extends Fragment {
                 .addOnSuccessListener(qs -> {
                     if (!qs.isEmpty()) {
                         Toast.makeText(activity,
-                                "You're already in " + groupName,
+                                getString(R.string.already_in_group, groupName),
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -250,7 +250,7 @@ public class GroupsFragment extends Fragment {
                             .set(link)
                             .addOnSuccessListener(unused -> {
                                 Toast.makeText(activity,
-                                        "Joined " + groupName + "!",
+                                        getString(R.string.joined_group, groupName),
                                         Toast.LENGTH_SHORT).show();
                                 // Clear search and refresh my groups
                                 etSearch.setText("");
@@ -260,7 +260,7 @@ public class GroupsFragment extends Fragment {
                             })
                             .addOnFailureListener(e ->
                                     Toast.makeText(activity,
-                                            "Failed to join: " + e.getMessage(),
+                                            getString(R.string.join_failed, e.getMessage()),
                                             Toast.LENGTH_SHORT).show());
                 });
     }
@@ -280,7 +280,7 @@ public class GroupsFragment extends Fragment {
                             .addOnSuccessListener(qs -> {
                                 if (!qs.isEmpty()) {
                                     Toast.makeText(activity,
-                                            "You're already in " + groupName,
+                                            getString(R.string.already_in_group, groupName),
                                             Toast.LENGTH_SHORT).show();
                                     return;
                                 }
@@ -293,13 +293,13 @@ public class GroupsFragment extends Fragment {
                                         .set(link)
                                         .addOnSuccessListener(unused -> {
                                             Toast.makeText(activity,
-                                                    "Joined " + groupName + "!",
+                                                    getString(R.string.joined_group, groupName),
                                                     Toast.LENGTH_SHORT).show();
                                             createGroups();
                                         })
                                         .addOnFailureListener(e ->
                                                 Toast.makeText(activity,
-                                                        "Failed to join: " + e.getMessage(),
+                                                        getString(R.string.join_failed, e.getMessage()),
                                                         Toast.LENGTH_SHORT).show());
                             });
                 });
@@ -316,7 +316,7 @@ public class GroupsFragment extends Fragment {
                     }
                     groupsContainer.removeView(group);
                     groups.remove(group);
-                    Toast.makeText(activity, "Left group", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity,  getString(R.string.left_group), Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(activity, "Failed to leave group", Toast.LENGTH_SHORT).show());
@@ -343,7 +343,7 @@ public class GroupsFragment extends Fragment {
                             anyResult ? View.VISIBLE : View.GONE);
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(activity, "Search failed: " + e.getMessage(),
+                        Toast.makeText(activity, getString(R.string.search_failed, e.getMessage()),
                                 Toast.LENGTH_SHORT).show());
     }
 
