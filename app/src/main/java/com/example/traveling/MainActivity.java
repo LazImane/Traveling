@@ -144,6 +144,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void fn_home(){
         fn_group_modified(navHome);
+        getSupportFragmentManager().popBackStack(
+                null,
+                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
         replaceFragment(new HomeFragments());
     }
     public void fn_notif(){

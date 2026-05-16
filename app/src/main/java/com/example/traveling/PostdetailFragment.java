@@ -1,6 +1,7 @@
 package com.example.traveling;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -369,7 +370,34 @@ public class PostdetailFragment extends Fragment {
     }
 
     private void openMaps() {
-        //TODO : WITH OPEN MAP STREET OR SMT
+        String address = post.getAddress();
+        if (address == null || address.isEmpty()) {
+            Toast.makeText(getContext(), "Pas d'adresse disponible",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent osmAnd = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("osmand.api://navigate?dest_name=" + Uri.encode(address)
+                        + "&dest_lat=0&dest_lon=0"));
+        osmAnd.setPackage("net.osmand");
+
+        Intent browser = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://www.openstreetmap.org/search?query="
+                        + Uri.encode(address)));
+
+        Intent geo = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("geo:0,0?q=" + Uri.encode(address)));
+
+        if (osmAnd.resolveActivity(requireActivity().getPackageManager()) != null) {
+            startActivity(osmAnd);
+        } else if (geo.resolveActivity(requireActivity().getPackageManager()) != null) {
+            // Shows a chooser: OSMAnd, Google Maps, Waze, whatever is installed
+            startActivity(Intent.createChooser(geo, "Ouvrir avec…"));
+        } else {
+            // Guaranteed fallback — OSM in the browser
+            startActivity(browser);
+        }
     }
 
     private void submitReport() {
