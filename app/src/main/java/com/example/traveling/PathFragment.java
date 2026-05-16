@@ -122,7 +122,9 @@ public class PathFragment extends Fragment {
         intent.putExtra("rain", btn_rain.isSelected());
         new Thread(() -> {
             SearchInfo start_loc = MVPMapSearch.getCoordinatesThread(getActivity(), et_start_location.getText().toString());
-            if(start_loc == null) return;
+            if(start_loc == null) {
+                return;
+            }
             intent.putExtra("start_lat", start_loc.lat);
             intent.putExtra("start_lon", start_loc.lon);
             System.out.println(start_loc.lat + " " + start_loc.lon);
