@@ -2,6 +2,8 @@ package com.example.traveling;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -15,6 +17,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -27,12 +31,14 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -40,7 +46,8 @@ public class PostFragment extends Fragment {
 
     //views
     ImageView ivPostIm;
-    EditText etTitle, etDescription, etTag, etAddress, etGroup;
+    EditText etTitle, etDescription, etTag, etAddress;
+    AutoCompleteTextView etGroup;
     ImageButton ibVoiceDesc, ibAiTag;
     TextView tvAddTag;
     ChipGroup chipGroupTags;
@@ -85,6 +92,7 @@ public class PostFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_post, container, false);
         init();
         setListeners();
+        loadGroupSuggestions();
         return view;
     }
 
@@ -145,18 +153,18 @@ public class PostFragment extends Fragment {
             cbPublic.setChecked(false);
         });
 
-        etGroup.setOnFocusChangeListener((v, hasFocus) -> {
-
-            if (!hasFocus) {
-
-                String group = etGroup.getText().toString().trim();
-
-                if (!TextUtils.isEmpty(group)) {
-                    cbPrivate.setChecked(true);
-                    cbPublic.setChecked(false);
-                }
-            }
-        });
+//        etGroup.setOnFocusChangeListener((v, hasFocus) -> {
+//
+//            if (!hasFocus) {
+//
+//                String group = etGroup.getText().toString().trim();
+//
+//                if (!TextUtils.isEmpty(group)) {
+//                    cbPrivate.setChecked(true);
+//                    cbPublic.setChecked(false);
+//                }
+//            }
+//        });
 
         btnPost.setOnClickListener(v -> handlePost());
     }
@@ -276,9 +284,8 @@ public class PostFragment extends Fragment {
                             .getDocuments()
                             .get(0)
                             .getId();
-
-                    // group post = automatically private
-                    createPost(user, imageUrl, groupId, groupName,false);
+                    boolean isPublic = cbPublic.isChecked();
+                    createPost(user, imageUrl, groupId, groupName,isPublic);
                 })
                 .addOnFailureListener(e -> {
 
@@ -322,28 +329,135 @@ public class PostFragment extends Fragment {
         post.put("imageUrl", imageUrl);
         post.put("timestamp", Timestamp.now());
 
+        if (!address.isEmpty()) {
+            new Thread(() -> {
+                try {
+                    Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
+                    List<Address> results = geocoder.getFromLocationName(address, 1);
+                    if (results != null && !results.isEmpty()) {
+                        post.put("latitude",  results.get(0).getLatitude());
+                        post.put("longitude", results.get(0).getLongitude());
+                    }
+                } catch (Exception ignored) {
+                    // Geocoding failed
+                }
+                requireActivity().runOnUiThread(() -> saveToFirestore(post, groupId, user));
+            }).start();
+        } else {
+            saveToFirestore(post, groupId, user);
+        }
+    }
+
+    private void saveToFirestore(Map<String, Object> post, String groupId, FirebaseUser user) {
         mainActivity.db.collection("posts")
                 .add(post)
                 .addOnSuccessListener(docRef -> {
-
-                    Toast.makeText(
-                            getContext(),
-                            getString(R.string.post_success),
-                            Toast.LENGTH_SHORT
-                    ).show();
-
+                    if (groupId != null && !groupId.isEmpty()) {
+                        notifyGroupMembers(docRef.getId(),
+                                (String) post.get("description"), groupId, user.getUid());
+                    }
+                    Toast.makeText(getContext(),
+                            getString(R.string.post_success), Toast.LENGTH_SHORT).show();
                     resetForm();
                 })
                 .addOnFailureListener(e -> {
-
                     btnPost.setEnabled(true);
-
-                    Toast.makeText(
-                            getContext(),
+                    Toast.makeText(getContext(),
                             getString(R.string.post_failed) + ": " + e.getMessage(),
-                            Toast.LENGTH_LONG
-                    ).show();
+                            Toast.LENGTH_LONG).show();
                 });
+    }
+
+    private void notifyGroupMembers(String postId, String description,
+                                    String groupId, String authorId) {
+        mainActivity.db.collection("groups_to_users_link")
+                .whereEqualTo("group_id", groupId)
+                .get()
+                .addOnSuccessListener(qs -> {
+                    for (DocumentSnapshot link : qs) {
+                        String targetUid = link.getString("user_id");
+                        // Don't notify the author themselves
+                        if (targetUid != null && !targetUid.equals(authorId)) {
+                            Map<String, Object> notif = new HashMap<>();
+                            notif.put("userId",    targetUid);
+                            notif.put("type",      "new_post_group");
+                            notif.put("message",   description != null && !description.isEmpty()
+                                    ? description
+                                    : "Nouveau post dans votre groupe");
+                            notif.put("postId",    postId);
+                            notif.put("groupId",   groupId);
+                            notif.put("read",      false);
+                            notif.put("timestamp", com.google.firebase.Timestamp.now());
+                            mainActivity.db.collection("notifications")
+                                    .document()
+                                    .set(notif);
+                        }
+                    }
+                });
+    }
+
+    /*================AUTOCOMPLETE=======================================*/
+
+    private void loadGroupSuggestions() {
+        mainActivity.db.collection("groups")
+                .get()
+                .addOnSuccessListener(qs -> {
+                    List<String> groupNames = new ArrayList<>();
+                    for (DocumentSnapshot doc : qs) {
+                        String name = doc.getString("name");
+                        if (name != null) groupNames.add(name);
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            groupNames
+                    ) {
+                        @Override
+                        public android.widget.Filter getFilter() {
+                            return new android.widget.Filter() {
+                                @Override
+                                protected FilterResults performFiltering(CharSequence constraint) {
+                                    FilterResults results = new FilterResults();
+                                    if (constraint == null || constraint.length() == 0) {
+                                        results.values = groupNames;
+                                        results.count  = groupNames.size();
+                                    } else {
+                                        String query = constraint.toString().toLowerCase();
+                                        List<String> filtered = new ArrayList<>();
+                                        for (String name : groupNames) {
+                                            if (name.toLowerCase().contains(query)) {
+                                                filtered.add(name);
+                                            }
+                                        }
+                                        results.values = filtered;
+                                        results.count  = filtered.size();
+                                    }
+                                    return results;
+                                }
+
+                                @Override
+                                protected void publishResults(CharSequence constraint,
+                                                              FilterResults results) {
+                                    clear();
+                                    //noinspection unchecked
+                                    addAll((List<String>) results.values);
+                                    if (results.count > 0) notifyDataSetChanged();
+                                    else notifyDataSetInvalidated();
+                                }
+
+                                @Override
+                                public CharSequence convertResultToString(Object resultValue) {
+                                    return (String) resultValue;
+                                }
+                            };
+                        }
+                    };
+
+                    etGroup.setAdapter(adapter);
+                })
+                .addOnFailureListener(e ->
+                        android.util.Log.e("PostFragment", "Failed to load groups: " + e.getMessage()));
     }
 
     /*============================RESET=================================*/

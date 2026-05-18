@@ -188,16 +188,18 @@
             android:paddingEnd="12dp"
             android:paddingStart="12dp">
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/etGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@null"
                 android:hint="@string/group"
                 android:inputType="text"
+                android:completionThreshold="1"
+                android:dropDownHeight="200dp"
+                android:background="@null"
                 android:textColor="@color/black"
                 android:textColorHint="@color/grey"
-                android:textSize="13sp" />
+                android:textSize="15sp" />
         </LinearLayout>
 
         <!-- PUBLIC / PRIVATE -->

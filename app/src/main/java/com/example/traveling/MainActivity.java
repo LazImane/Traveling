@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     ImageButton btnProfile, btnMenu;
     ImageButton navHome, navTravelPath, navPost, navGroups, navNotifications;
+    TextView tvNotifBadge;
 
     boolean emailVerified;
 
@@ -38,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Set permissions based on Android version
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             REQUIRED_PERMISSIONS = new String[]{
                     Manifest.permission.READ_MEDIA_IMAGES
@@ -59,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
         fn_group_modified(navHome);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateNotifBadge();
+    }
+
     private void getIntentData() {
         emailVerified = getIntent().getBooleanExtra("emailVerified", false);
     }
@@ -70,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         navPost             = findViewById(R.id.navPost);
         navGroups           = findViewById(R.id.navGroups);
         navNotifications    = findViewById(R.id.navNotifications);
+        tvNotifBadge        = findViewById(R.id.tvNotifBadge);
         mAuth               = FirebaseAuth.getInstance();
         db                  = FirebaseFirestore.getInstance();
         user                = mAuth.getCurrentUser();
@@ -103,8 +111,6 @@ public class MainActivity extends AppCompatActivity {
         navNotifications.setOnClickListener(v -> {
             fn_notif();
         });
-
-        //TODO: Filter button
     }
 
     private void handleProfile() {
@@ -151,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void fn_notif(){
         fn_group_modified(navNotifications);
+        tvNotifBadge.setVisibility(View.GONE);
         replaceFragment(new NotificationsFragment());
     }
 
@@ -169,6 +176,28 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentLayout, fragment);
         fragmentTransaction.commit();
+    }
+
+    public void updateNotifBadge() {
+        if (mAuth.getCurrentUser() == null
+                || mAuth.getCurrentUser().isAnonymous()) {
+            tvNotifBadge.setVisibility(View.GONE);
+            return;
+        }
+
+        db.collection("notifications")
+                .whereEqualTo("userId", mAuth.getCurrentUser().getUid())
+                .whereEqualTo("read", false)
+                .get()
+                .addOnSuccessListener(qs -> {
+                    int count = qs.size();
+                    if (count > 0) {
+                        tvNotifBadge.setVisibility(View.VISIBLE);
+                        tvNotifBadge.setText(count > 99 ? "99+" : String.valueOf(count));
+                    } else {
+                        tvNotifBadge.setVisibility(View.GONE);
+                    }
+                });
     }
 
 }

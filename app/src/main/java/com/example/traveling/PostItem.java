@@ -21,6 +21,8 @@ public class PostItem {
     private String imageUri;
     private long timestampMillis;
     private boolean likedByMe = false;
+    private double latitude;
+    private double longitude;
 
     public PostItem() {}
 
@@ -65,4 +67,8 @@ public class PostItem {
     public void setTimestampMillis(long ms)     { this.timestampMillis = ms; }
     public boolean isLikedByMe()              { return likedByMe; }
     public void setLikedByMe(boolean liked)   { this.likedByMe = liked; }
+    public double getLatitude()  { return latitude; }
+    public double getLongitude() { return longitude; }
+    public void setLatitude(double latitude)   { this.latitude  = latitude; }
+    public void setLongitude(double longitude) { this.longitude = longitude; }
 }

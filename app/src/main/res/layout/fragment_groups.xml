@@ -30,6 +30,7 @@
             android:layout_weight="1"
             android:hint="@string/find_group"
             android:textColorHint="@color/grey"
+            android:textColor="@color/black"
             android:textSize="15sp"
             android:background="@null"
             android:inputType="text" />

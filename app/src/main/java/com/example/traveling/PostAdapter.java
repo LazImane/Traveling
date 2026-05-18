@@ -74,16 +74,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         h.tvLikeCount.setText(formatCount(post.getLikes()));
 
         // Tags chips
-        h.chipGroupTags.removeAllViews();
-        if (post.getTags() != null) {
-            for (String tag : post.getTags()) {
-                Chip chip = new Chip(h.chipGroupTags.getContext());
-                chip.setText("#" + tag);
-                chip.setClickable(false);
-                chip.setCheckable(false);
-                h.chipGroupTags.addView(chip);
-            }
-        }
+//        h.chipGroupTags.removeAllViews();
+//        if (post.getTags() != null) {
+//            for (String tag : post.getTags()) {
+//                Chip chip = new Chip(h.chipGroupTags.getContext());
+//                chip.setText("#" + tag);
+//                chip.setClickable(false);
+//                chip.setCheckable(false);
+//                h.chipGroupTags.addView(chip);
+//            }
+//        }
 
         //  listeners
         h.itemView.setOnClickListener(v -> listener.onPostClick(post));
@@ -132,7 +132,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         TextView tvTitle;
         ImageView  btnLike;
         TextView   tvLikeCount;
-        ChipGroup  chipGroupTags;
+        //ChipGroup  chipGroupTags;
 
         PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -141,7 +141,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             tvTitle = itemView.findViewById(R.id.tvTitle);
             btnLike       = itemView.findViewById(R.id.btnLike);
             tvLikeCount   = itemView.findViewById(R.id.tvLikeCount);
-            chipGroupTags = itemView.findViewById(R.id.chipGroupTags);
+            //chipGroupTags = itemView.findViewById(R.id.chipGroupTags);
         }
     }
 }

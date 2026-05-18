@@ -29,6 +29,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.CancellationTokenSource;
+
 /**TODO : IMPLEMENT GPS FOR FILTER AROUND ME*/
 
 public class HomeFragments extends Fragment {
@@ -52,6 +63,32 @@ public class HomeFragments extends Fragment {
     private String activeGroupId = null;
     private String activeGroupName = null;
 
+    //around me filter button
+    private static final double RADIUS_KM = 10.0;
+
+    private FusedLocationProviderClient fusedLocation;
+    private double userLat = Double.NaN;
+    private double userLng = Double.NaN;
+
+    // Permission launcher — replaces the old requestPermissions() API
+    private final ActivityResultLauncher<String[]> locationPermLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.RequestMultiplePermissions(),
+                    result -> {
+                        boolean granted = Boolean.TRUE.equals(result.get(Manifest.permission.ACCESS_FINE_LOCATION))
+                                || Boolean.TRUE.equals(result.get(Manifest.permission.ACCESS_COARSE_LOCATION));
+                        if (granted) {
+                            fetchLocationThenFilter();
+                        } else {
+                            Toast.makeText(getContext(),
+                                    "Location permission denied — can't filter nearby posts.",
+                                    Toast.LENGTH_SHORT).show();
+                            // Snap the filter back off
+                            activeFilter = null;
+                            resetFilterButtonStyles();
+                        }
+                    });
+
     public HomeFragments() {
         // Required empty public constructor
     }
@@ -68,6 +105,7 @@ public class HomeFragments extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
         mainActivity = (MainActivity) getContext();
+        fusedLocation = LocationServices.getFusedLocationProviderClient(requireActivity());
         if (getArguments() != null) {
             activeGroupId   = getArguments().getString("groupId");
             activeGroupName = getArguments().getString("groupName");
@@ -123,14 +161,22 @@ public class HomeFragments extends Fragment {
 
     private void handleFilter(String filter) {
         if (filter.equals(activeFilter)) {
-            // Tap same filter → clear it
             activeFilter = null;
+            userLat = Double.NaN;
+            userLng = Double.NaN;
             resetFilterButtonStyles();
-        } else {
-            activeFilter = filter;
-            highlightActiveFilter(filter);
+            applySearchAndFilter(etSearch.getText().toString().trim(), null);
+            return;
         }
-        applySearchAndFilter(etSearch.getText().toString().trim(), activeFilter);
+
+        activeFilter = filter;
+        highlightActiveFilter(filter);
+
+        if ("around".equals(filter)) {
+            requestLocationAndFilter();
+        } else {
+            applySearchAndFilter(etSearch.getText().toString().trim(), filter);
+        }
     }
 
     private void applySearchAndFilter(String query, String filter) {
@@ -145,25 +191,27 @@ public class HomeFragments extends Fragment {
 
     private boolean matchesFilter(PostItem post, String filter) {
         if (filter == null || filter.isEmpty()) return true;
-        if (filter.equals("around"))            return true; // location-aware: implement with GPS later
 
-        // Check if any tag contains the filter keyword
-        if (post.getTags() != null) {
-            for (String tag : post.getTags()) {
-                if (tag.toLowerCase().contains(filter.toLowerCase())) return true;
-            }
+        if ("around".equals(filter)) {
+            // If we don't have a fix yet, show nothing until the callback fires
+            if (Double.isNaN(userLat) || Double.isNaN(userLng)) return false;
+            // Posts without stored coordinates are excluded
+            if (post.getLatitude() == 0.0 && post.getLongitude() == 0.0) return false;
+            return distanceKm(userLat, userLng,
+                    post.getLatitude(), post.getLongitude()) <= RADIUS_KM;
         }
-        // Also check description and address and the title
+
+        // existing tag / description / address / title checks
+        if (post.getTags() != null) {
+            for (String tag : post.getTags())
+                if (tag.toLowerCase().contains(filter.toLowerCase())) return true;
+        }
         String desc = post.getDescription();
         if (desc != null && desc.toLowerCase().contains(filter.toLowerCase())) return true;
         String addr = post.getAddress();
         if (addr != null && addr.toLowerCase().contains(filter.toLowerCase())) return true;
         String title = post.getTitle();
-
-        if (title != null &&
-                title.toLowerCase().contains(filter.toLowerCase())) {
-            return true;
-        }
+        if (title != null && title.toLowerCase().contains(filter.toLowerCase())) return true;
 
         return false;
     }
@@ -189,53 +237,35 @@ public class HomeFragments extends Fragment {
         return false;
     }
 
-
-    //load posts from firestore
+    // load posts from firestore
     private void loadPosts() {
+        android.util.Log.d("HomeFragments", "loadPosts: activeGroupId=" + activeGroupId + " activeGroupName=" + activeGroupName);
         progressBar.setVisibility(View.VISIBLE);
-
         Log.d("HomeFragments", "Starting to load posts...");
 
-        com.google.firebase.firestore.CollectionReference postsRef =
-                mainActivity.db.collection("posts");
-
         com.google.firebase.firestore.Query query;
+
         if (activeGroupId != null) {
-            query = postsRef.whereEqualTo("group", activeGroupId).limit(50);
+            boolean isAnonymous = mainActivity.mAuth.getCurrentUser() == null || mainActivity.mAuth.getCurrentUser().isAnonymous();
+            if (isAnonymous) {
+                // guest users only see public posts in the group
+                query = mainActivity.db.collection("posts")
+                        .whereEqualTo("groupId", activeGroupId)
+                        .whereEqualTo("isPublic", true)
+                        .limit(50);
+            } else {
+                // members see all posts in the group
+                query = mainActivity.db.collection("posts")
+                        .whereEqualTo("groupId", activeGroupId)
+                        .limit(50);
+            }
         } else {
-            query = postsRef.whereEqualTo("isPublic", true).limit(50);
+            query = mainActivity.db.collection("posts")
+                    .whereEqualTo("isPublic", true)
+                    .limit(50);
         }
 
         query.get()
-                .addOnSuccessListener(querySnapshot -> {
-                    allPosts.clear();
-                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                        PostItem item = buildPostItem(doc);
-                        allPosts.add(item);
-                    }
-                    applySearchAndFilter(etSearch.getText().toString().trim(), activeFilter);
-                    progressBar.setVisibility(View.GONE);
-
-                    if (allPosts.isEmpty()) {
-                        Toast.makeText(getContext(),
-                                activeGroupId != null
-                                        ? getString(R.string.no_posts_group)
-                                        : getString(R.string.no_posts_found),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),
-                            getString(R.string.failed_load_posts) + e.getMessage(),
-                            Toast.LENGTH_SHORT).show();
-                });
-
-        mainActivity.db.collection("posts")
-                .whereEqualTo("isPublic", true)
-                //.orderBy("timestamp", Query.Direction.DESCENDING)
-                .limit(50)
-                .get()
                 .addOnSuccessListener(querySnapshot -> {
                     Log.d("HomeFragments", "Success! Found " + querySnapshot.size() + " posts");
                     allPosts.clear();
@@ -248,7 +278,11 @@ public class HomeFragments extends Fragment {
                     progressBar.setVisibility(View.GONE);
 
                     if (allPosts.isEmpty()) {
-                        Toast.makeText(getContext(), getString(R.string.no_posts_database), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(),
+                                activeGroupId != null
+                                        ? getString(R.string.no_posts_group)
+                                        : getString(R.string.no_posts_database),
+                                Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -258,8 +292,6 @@ public class HomeFragments extends Fragment {
                             "Failed to load posts: " + e.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 });
-
-        //TODO: add posts from groups too
     }
 
     //maps firestore storage to PostItem
@@ -267,16 +299,26 @@ public class HomeFragments extends Fragment {
         PostItem item = new PostItem();
         item.setFirestoreId(doc.getId());
         item.setAuthorId(doc.getString("authorId"));
+        item.setTitle(doc.getString("title"));
         item.setDescription(doc.getString("description"));
         item.setAddress(doc.getString("address"));
+        //group
         item.setGroupId(doc.getString("groupId"));
         item.setGroupName(doc.getString("groupName"));
         Boolean pub = doc.getBoolean("isPublic");
+        //guest
         item.setPublic(pub != null && pub);
         Boolean anon = doc.getBoolean("isAnonymous");
         item.setAnonymous(anon != null && anon);
+        //likes
         Long likes = doc.getLong("likes");
         item.setLikes(likes != null ? likes : 0);
+        //pos
+        Double lat = doc.getDouble("latitude");
+        Double lng = doc.getDouble("longitude");
+        item.setLatitude(lat  != null ? lat  : 0.0);
+        item.setLongitude(lng != null ? lng : 0.0);
+
         //noinspection unchecked
         List<String> tags = (List<String>) doc.get("tags");
         item.setTags(tags);
@@ -413,5 +455,64 @@ public class HomeFragments extends Fragment {
         f.setArguments(args);
         return f;
     }
+
+    private void requestLocationAndFilter() {
+        boolean fine   = ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+        boolean coarse = ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+
+        if (fine || coarse) {
+            fetchLocationThenFilter();
+        } else {
+            locationPermLauncher.launch(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            });
+        }
+    }
+
+    @SuppressWarnings("MissingPermission")
+    private void fetchLocationThenFilter() {
+        // getCurrentLocation gives a fresh fix (not a stale lastKnown)
+        fusedLocation.getCurrentLocation(
+                        Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+                        new CancellationTokenSource().getToken())
+                .addOnSuccessListener(location -> {
+                    if (location == null) {
+                        Toast.makeText(getContext(),
+                                "Couldn't get your location. Try again.",
+                                Toast.LENGTH_SHORT).show();
+                        activeFilter = null;
+                        resetFilterButtonStyles();
+                        return;
+                    }
+                    userLat = location.getLatitude();
+                    userLng = location.getLongitude();
+                    applySearchAndFilter(
+                            etSearch.getText().toString().trim(), "around");
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(),
+                            "Location error: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                    activeFilter = null;
+                    resetFilterButtonStyles();
+                });
+    }
+
+    private static double distanceKm(double lat1, double lon1,
+                                     double lat2, double lon2) {
+        final double R = 6371.0; // Earth radius in km
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
 
 }

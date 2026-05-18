@@ -67,7 +67,6 @@
                 android:textSize="14sp"
                 android:background="@drawable/selectable_filter_bt"
                 android:textColor="@color/black"
-                android:textStyle="bold"
                 android:layout_marginEnd="8dp" />
 
             <androidx.appcompat.widget.AppCompatButton

@@ -39,34 +39,37 @@
                 android:padding="8dp"
                 android:contentDescription="Back" />
 
-            <!-- Location badge over image -->
-            <TextView
-                android:id="@+id/tvDetailAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|start"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="50dp"
-                android:background="@drawable/bg_location_chip"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
-                android:textColor="#FFFFFF"
-                android:textSize="11sp"
-                android:textStyle="bold" />
-
-            <!-- Title over image -->
-            <TextView
-                android:id="@+id/tvDetailTitle"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="14dp"
-                android:textColor="#FFFFFF"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:maxLines="3"
-                android:ellipsize="end" />
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="16dp">
+
+                <TextView
+                    android:id="@+id/tvDetailAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_location_chip"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvDetailTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:maxLines="3"
+                    android:ellipsize="end" />
+
+            </LinearLayout>
 
         </FrameLayout>
 
@@ -75,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="-24dp"
+            android:layout_marginTop="-10dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="6dp"
             app:cardBackgroundColor="@color/white">

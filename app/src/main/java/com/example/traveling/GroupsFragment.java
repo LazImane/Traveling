@@ -70,6 +70,9 @@ public class GroupsFragment extends Fragment {
         activity = (MainActivity) getActivity();
         groupsContainer = view.findViewById(R.id.groupsContainer);
         addGroup = view.findViewById(R.id.addGroup);
+        boolean isAnonymous = activity.mAuth.getCurrentUser() == null
+                || activity.mAuth.getCurrentUser().isAnonymous();
+        addGroup.setVisibility(isAnonymous ? View.GONE : View.VISIBLE);
         searchResultsContainer = view.findViewById(R.id.searchResultsContainer);
         searchResultsScroll    = view.findViewById(R.id.searchResultsScroll);
         etSearch               = view.findViewById(R.id.etSearch);
@@ -101,16 +104,19 @@ public class GroupsFragment extends Fragment {
     }
 
     private void createGroups(){
+        if (activity.mAuth.getCurrentUser() == null
+                || activity.mAuth.getCurrentUser().isAnonymous()) {
+            return;
+        }
+
         groupsContainer.removeAllViews();
         activity.db.collection("groups_to_users_link")
-            .whereEqualTo("user_id", activity.user.getUid())
+            .whereEqualTo("user_id", activity.mAuth.getCurrentUser().getUid())
             .get()
             .addOnSuccessListener(queryDocumentSnapshots -> {
 
                 for (DocumentSnapshot doc : queryDocumentSnapshots) {
-
                     String groupId = doc.getString("group_id");
-
                     if (groupId != null) {
                         createGroup(groupId);
                     }
@@ -147,7 +153,7 @@ public class GroupsFragment extends Fragment {
         // Check if user is already in this group (for proper menu display)
         activity.db.collection("groups_to_users_link")
                 .whereEqualTo("group_id", groupId)
-                .whereEqualTo("user_id", activity.user.getUid())
+                .whereEqualTo("user_id", activity.mAuth.getCurrentUser().getUid())
                 .get()
                 .addOnSuccessListener(qs -> {
                     boolean isMember = !qs.isEmpty();
@@ -185,7 +191,7 @@ public class GroupsFragment extends Fragment {
             // Check if user is a member to show correct menu
             activity.db.collection("groups_to_users_link")
                     .whereEqualTo("group_id", groupId)
-                    .whereEqualTo("user_id", activity.user.getUid())
+                    .whereEqualTo("user_id", activity.mAuth.getCurrentUser().getUid())
                     .get()
                     .addOnSuccessListener(qs -> {
                         boolean isMember = !qs.isEmpty();
@@ -227,9 +233,16 @@ public class GroupsFragment extends Fragment {
     }
 
     private void joinGroup(String groupId, String groupName) {
-        String uid = activity.user.getUid();
+        if (activity.mAuth.getCurrentUser() == null
+                || activity.mAuth.getCurrentUser().isAnonymous()) {
+            Toast.makeText(activity, "Sign in to join groups",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // Check if already a member first
+        String uid = activity.mAuth.getCurrentUser().getUid();
+
+        // check if already a member first
         activity.db.collection("groups_to_users_link")
                 .whereEqualTo("group_id", groupId)
                 .whereEqualTo("user_id", uid)
@@ -266,7 +279,7 @@ public class GroupsFragment extends Fragment {
     }
 
     private void joinGroupFromMenu(String groupId) {
-        String uid = activity.user.getUid();
+        String uid = activity.mAuth.getCurrentUser().getUid();
 
         activity.db.collection("groups").document(groupId).get()
                 .addOnSuccessListener(doc -> {
@@ -308,7 +321,7 @@ public class GroupsFragment extends Fragment {
         String groupId = Objects.requireNonNull(groups.get(group));
         activity.db.collection("groups_to_users_link")
                 .whereEqualTo("group_id", groupId)
-                .whereEqualTo("user_id", activity.user.getUid())
+                .whereEqualTo("user_id", activity.mAuth.getCurrentUser().getUid())
                 .get()
                 .addOnSuccessListener(query -> {
                     for (DocumentSnapshot doc : query) {
@@ -358,7 +371,6 @@ public class GroupsFragment extends Fragment {
         TextView tvNotif = card.findViewById(R.id.groupNotification);
         View optionsBtn = card.findViewById(R.id.options);
 
-        optionsBtn.setVisibility(View.VISIBLE);
         tvNotif.setVisibility(View.GONE);
 
         tvName.setText(doc.getString("name"));
@@ -368,6 +380,18 @@ public class GroupsFragment extends Fragment {
                 .whereEqualTo("group_id", doc.getId()).get()
                 .addOnSuccessListener(qs ->
                         tvCount.setText(qs.size() + " members"));
+
+        boolean isAnonymous = activity.mAuth.getCurrentUser() == null || activity.mAuth.getCurrentUser().isAnonymous();
+
+        if (isAnonymous) {
+            optionsBtn.setVisibility(View.GONE);
+            card.setOnClickListener(v -> {
+                String name = doc.getString("name");
+                openGroupFeed(doc.getId(), name != null ? name : doc.getId());
+            });
+        }
+
+        optionsBtn.setVisibility(View.VISIBLE);
 
         optionsBtn.setOnClickListener(v -> {
             PopupMenu menu = new PopupMenu(requireContext(), v);
@@ -391,8 +415,10 @@ public class GroupsFragment extends Fragment {
 
     //helper
     private void loadGroupPhoto(String photoUrl, ImageView target) {
+        if (!isAdded() || getContext() == null) return;
+
         if (photoUrl != null && !photoUrl.isEmpty()) {
-            Glide.with(this)
+            Glide.with(requireContext())
                     .load(photoUrl)
                     .transform(new CircleCrop())
                     .placeholder(R.drawable.post_frame)
