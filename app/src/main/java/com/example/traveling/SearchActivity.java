@@ -236,7 +236,11 @@ public class SearchActivity extends AppCompatActivity {
     }
 
         private void reload() {
-
+            layout_results.removeAllViews();
+            for(int i = 0; i < random.nextInt(3)+3; i ++){
+                List<Integer> passage = createRandomizedList((int)(duration/70));
+                display_path(passage);
+            }
         }
 
         private void back() {

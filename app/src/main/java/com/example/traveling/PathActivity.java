@@ -1,14 +1,20 @@
 package com.example.traveling;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +31,9 @@ import org.osmdroid.util.GeoPoint;
 
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,12 +129,46 @@ public class PathActivity extends AppCompatActivity {
 
     private void setListeners() {
         btn_back.setOnClickListener(v -> back());
-        //layout_results.setOnClickListener(v -> export());
+        btn_export.setOnClickListener(v -> export());
     }
 
 
     private void export() {
+            // 1 — Capture the root view as a Bitmap
+            View rootView = getWindow().getDecorView().getRootView();
+            rootView.setDrawingCacheEnabled(true);
+            Bitmap screenshot = Bitmap.createBitmap(rootView.getDrawingCache());
+            rootView.setDrawingCacheEnabled(false);
 
+            // 2 — Set up the PDF document
+            PdfDocument document = new PdfDocument();
+            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(
+                    screenshot.getWidth(),
+                    screenshot.getHeight(),
+                    1
+            ).create();
+
+            PdfDocument.Page page = document.startPage(pageInfo);
+            Canvas canvas = page.getCanvas();
+            canvas.drawBitmap(screenshot, 0, 0, null);
+            document.finishPage(page);
+
+            // 3 — Write to Downloads folder
+            String fileName = "export_" + System.currentTimeMillis() + ".pdf";
+            File file = new File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                    fileName
+            );
+
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                document.writeTo(fos);
+                document.close();
+                Toast.makeText(this, "PDF saved to Downloads: " + fileName, Toast.LENGTH_LONG).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                document.close();
+                Toast.makeText(this, "Export failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
     }
 
     private void back() {
