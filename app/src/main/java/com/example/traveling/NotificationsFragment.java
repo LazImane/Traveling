@@ -57,7 +57,7 @@ public class NotificationsFragment extends Fragment {
             TextView tvMessage = emptyState.findViewById(R.id.tvNotifMessage);
             TextView tvDate    = emptyState.findViewById(R.id.tvNotifDate);
             View btnDismiss    = emptyState.findViewById(R.id.btnDismissNotif);
-            tvMessage.setText("Sign in to receive notifications");
+            tvMessage.setText(getString(R.string.notification_sign_in));
             tvDate.setVisibility(View.GONE);
             btnDismiss.setVisibility(View.GONE);
             notifContainer.addView(emptyState);
@@ -74,7 +74,7 @@ public class NotificationsFragment extends Fragment {
                 .addOnSuccessListener(qs -> {
                     notifContainer.removeAllViews();
                     if (qs.isEmpty()) {
-                        Toast.makeText(activity, "Aucune notification",
+                        Toast.makeText(activity, getString(R.string.notification_no),
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -92,7 +92,7 @@ public class NotificationsFragment extends Fragment {
                     activity.updateNotifBadge();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(activity, "Erreur: " + e.getMessage(),
+                        Toast.makeText(activity, getString(R.string.error) + e.getMessage(),
                                 Toast.LENGTH_SHORT).show());
     }
 

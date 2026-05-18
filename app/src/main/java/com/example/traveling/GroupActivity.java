@@ -100,7 +100,7 @@ public class GroupActivity extends AppCompatActivity {
                     })
                     .addOnFailureListener(e -> {
                         btnSave.setEnabled(true);
-                        Toast.makeText(this, "Image upload failed: " + e.getMessage(),
+                        Toast.makeText(this, getString(R.string.group_image_upload_failed) + e.getMessage(),
                                 Toast.LENGTH_LONG).show();
                     });
         } else {
@@ -118,12 +118,11 @@ public class GroupActivity extends AppCompatActivity {
 
         groupRef.set(groupData)
                 .addOnSuccessListener(unused -> {
-                    // 4. Only link the user AFTER the group doc exists
                     linkUserToGroup(groupRef.getId());
                 })
                 .addOnFailureListener(e -> {
                     btnSave.setEnabled(true);
-                    Toast.makeText(this, "Failed to create group: " + e.getMessage(),
+                    Toast.makeText(this, getString(R.string.group_create_failed) + e.getMessage(),
                             Toast.LENGTH_LONG).show();
                 });
     }
@@ -138,7 +137,7 @@ public class GroupActivity extends AppCompatActivity {
                 .addOnSuccessListener(unused -> finish())
                 .addOnFailureListener(e -> {
                     btnSave.setEnabled(true);
-                    Toast.makeText(this, "Failed to join group: " + e.getMessage(),
+                    Toast.makeText(this, getString(R.string.group_join_failed) + e.getMessage(),
                             Toast.LENGTH_LONG).show();
                 });
     }

@@ -158,7 +158,7 @@ public class Profile extends AppCompatActivity {
                     .addOnFailureListener(e -> {
                         btnSave.setEnabled(true);
                         Toast.makeText(this,
-                                "Image upload failed",
+                                getString(R.string.group_image_upload_failed),
                                 Toast.LENGTH_SHORT).show();
                     });
 

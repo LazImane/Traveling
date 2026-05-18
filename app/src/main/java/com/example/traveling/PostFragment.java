@@ -123,9 +123,9 @@ public class PostFragment extends Fragment {
         });
 
         ibAiTag.setOnClickListener(v ->
-                Toast.makeText(getContext(), "AI tag suggestion coming soon", Toast.LENGTH_SHORT).show());
+                Toast.makeText(getContext(), getString(R.string.ai_soon), Toast.LENGTH_SHORT).show());
         ibVoiceDesc.setOnClickListener(v ->
-                Toast.makeText(getContext(), "Voice input coming soon", Toast.LENGTH_SHORT).show());
+                Toast.makeText(getContext(), getString(R.string.voice_soon) , Toast.LENGTH_SHORT).show());
 
         cbPublic.setOnClickListener(v -> {
             cbPublic.setChecked(true);
@@ -139,7 +139,7 @@ public class PostFragment extends Fragment {
 
                 Toast.makeText(
                         getContext(),
-                        "Private posts require a group",
+                        getString(R.string.private_post_group),
                         Toast.LENGTH_SHORT
                 ).show();
 
@@ -224,21 +224,19 @@ public class PostFragment extends Fragment {
                 .addOnFailureListener(e -> {
                     btnPost.setEnabled(true);
                     Toast.makeText(getContext(),
-                            "Image upload failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            getString(R.string.group_image_upload_failed) + e.getMessage(), Toast.LENGTH_LONG).show();
                 })
                 .continueWithTask(task -> {
                     if (!task.isSuccessful()) throw task.getException();
-                    // 3. Get the public download URL once upload completes
                     return imageRef.getDownloadUrl();
                 })
                 .addOnSuccessListener(downloadUri -> {
-                    // 4. Save post metadata + image URL to Firestore
                     savePostToFirestore(user, downloadUri.toString());
                 })
                 .addOnFailureListener(e -> {
                     btnPost.setEnabled(true);
                     Toast.makeText(getContext(),
-                            "Could not get image URL: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            getString(R.string.url_cant) + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
 
@@ -250,7 +248,7 @@ public class PostFragment extends Fragment {
 
         if (TextUtils.isEmpty(title)) {
             btnPost.setEnabled(true);
-            Toast.makeText(getContext(), "Title is required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.title_required), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -273,7 +271,7 @@ public class PostFragment extends Fragment {
 
                         Toast.makeText(
                                 getContext(),
-                                "Group does not exist",
+                                getString(R.string.group_not_exist),
                                 Toast.LENGTH_LONG
                         ).show();
 
@@ -293,7 +291,7 @@ public class PostFragment extends Fragment {
 
                     Toast.makeText(
                             getContext(),
-                            "Failed to validate group",
+                            getString(R.string.group_validate_failed),
                             Toast.LENGTH_LONG
                     ).show();
                 });
@@ -376,14 +374,14 @@ public class PostFragment extends Fragment {
                 .addOnSuccessListener(qs -> {
                     for (DocumentSnapshot link : qs) {
                         String targetUid = link.getString("user_id");
-                        // Don't notify the author themselves
+                        // Don't notify the author
                         if (targetUid != null && !targetUid.equals(authorId)) {
                             Map<String, Object> notif = new HashMap<>();
                             notif.put("userId",    targetUid);
                             notif.put("type",      "new_post_group");
                             notif.put("message",   description != null && !description.isEmpty()
                                     ? description
-                                    : "Nouveau post dans votre groupe");
+                                    : getString(R.string.new_post_in_your_group));
                             notif.put("postId",    postId);
                             notif.put("groupId",   groupId);
                             notif.put("read",      false);
@@ -457,7 +455,7 @@ public class PostFragment extends Fragment {
                     etGroup.setAdapter(adapter);
                 })
                 .addOnFailureListener(e ->
-                        android.util.Log.e("PostFragment", "Failed to load groups: " + e.getMessage()));
+                        android.util.Log.e("PostFragment", getString(R.string.group_load_failed) + e.getMessage()));
     }
 
     /*============================RESET=================================*/

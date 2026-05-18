@@ -235,7 +235,7 @@ public class GroupsFragment extends Fragment {
     private void joinGroup(String groupId, String groupName) {
         if (activity.mAuth.getCurrentUser() == null
                 || activity.mAuth.getCurrentUser().isAnonymous()) {
-            Toast.makeText(activity, "Sign in to join groups",
+            Toast.makeText(activity, getString(R.string.group_sign_to_join),
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -332,7 +332,7 @@ public class GroupsFragment extends Fragment {
                     Toast.makeText(activity,  getString(R.string.left_group), Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(activity, "Failed to leave group", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(activity, getString(R.string.group_leave_failed), Toast.LENGTH_SHORT).show());
     }
 
     /// SEARCH AND IT'S RESULTS

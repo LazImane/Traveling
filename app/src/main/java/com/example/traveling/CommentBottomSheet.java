@@ -114,7 +114,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(getContext(),
-                                "Impossible de charger les commentaires",
+                                getString(R.string.comment_load_failed),
                                 Toast.LENGTH_SHORT).show());
     }
 
@@ -124,7 +124,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
         String uid = mainActivity.mAuth.getCurrentUser() != null
                 ? mainActivity.mAuth.getCurrentUser().getUid() : null;
         if (uid == null) {
-            Toast.makeText(getContext(), "Connectez-vous pour commenter",
+            Toast.makeText(getContext(), getString(R.string.comment_login_required),
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -162,7 +162,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
                 })
                 .addOnFailureListener(e -> {
                     btnSend.setEnabled(true);
-                    Toast.makeText(getContext(), "Échec de l'envoi", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.comment_send_failed), Toast.LENGTH_SHORT).show();
                 });
     }
 

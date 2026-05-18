@@ -40,7 +40,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.CancellationTokenSource;
 
-/**TODO : IMPLEMENT GPS FOR FILTER AROUND ME*/
 
 public class HomeFragments extends Fragment {
     EditText etSearch;
@@ -81,7 +80,7 @@ public class HomeFragments extends Fragment {
                             fetchLocationThenFilter();
                         } else {
                             Toast.makeText(getContext(),
-                                    "Location permission denied — can't filter nearby posts.",
+                                    getString(R.string.location_perm_denied),
                                     Toast.LENGTH_SHORT).show();
                             // Snap the filter back off
                             activeFilter = null;
@@ -289,7 +288,7 @@ public class HomeFragments extends Fragment {
                     Log.e("HomeFragments", "Failed to load posts", e);
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(getContext(),
-                            "Failed to load posts: " + e.getMessage(),
+                            getString(R.string.failed_load_post) + e.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 });
     }
@@ -483,7 +482,7 @@ public class HomeFragments extends Fragment {
                 .addOnSuccessListener(location -> {
                     if (location == null) {
                         Toast.makeText(getContext(),
-                                "Couldn't get your location. Try again.",
+                                getString(R.string.location_cant_try_again),
                                 Toast.LENGTH_SHORT).show();
                         activeFilter = null;
                         resetFilterButtonStyles();

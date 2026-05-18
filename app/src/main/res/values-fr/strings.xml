@@ -1,0 +1,177 @@
+<resources>
+    <string name="app_name">Traveling</string>
+
+    <string name="create_account">Créer un compte</string>
+    <string name="signup_instruction">Entrez votre email pour vous inscrire à cette application</string>
+    <string name="emailEnter">Veuillez entrer votre email</string>
+    <string name="emailValid">Veuillez entrer un email valide</string>
+    <string name="emailVerify">Veuillez vérifier votre email</string>
+    <string name="emailError">Erreur lors de la vérification de l\'email. Réessayez</string>
+    <string name="email_hint">email@domaine.com</string>
+
+    <string name="continue_btn">Continuer</string>
+    <string name="continue_guest">Continuer en tant qu\'invité</string>
+
+    <string name="continue_google">Continuer avec Google</string>
+    <string name="continue_apple">Continuer avec Apple</string>
+
+    <string name="or">ou</string>
+
+    <string name="terms_text">
+        En continuant, vous acceptez nos Conditions d\'utilisation et notre Politique de confidentialité.
+    </string>
+
+    <string name="welcome_back">Bon retour !</string>
+    <string name="enter_password">Veuillez entrer votre mot de passe</string>
+
+    <string name="password_hint">Mot de passe</string>
+    <string name="create_pswd">Créer un mot de passe</string>
+    <string name="confirm_password_hint">Veuillez confirmer votre mot de passe</string>
+    <string name="choose_password">Choisissez un mot de passe sécurisé pour votre compte</string>
+    <string name="pwd6carMin">Le mot de passe doit contenir au moins 6 caractères</string>
+    <string name="password_mismatch">Les mots de passe ne correspondent pas</string>
+
+    <string name="signInFailG">Échec de connexion en tant qu\'invité</string>
+    <string name="auth_failed">Échec de l\'authentification</string>
+    <string name="profile_create_failed">Impossible de créer le profil</string>
+    <string name="load_profile_failed">Impossible de charger le profil</string>
+    <string name="anonymous">Anonyme</string>
+    <string name="back">Retour</string>
+
+    <string name="search_hint">Rechercher des lieux, thèmes ou auteurs...</string>
+    <string name="nature">NATURE</string>
+    <string name="city">VILLE</string>
+    <string name="museum">MUSÉE</string>
+    <string name="shop">MAGASINS</string>
+    <string name="around_me">AUTOUR DE MOI</string>
+
+    <string name="myProfile">Mon profil</string>
+
+    <string name="userN">Nom d\'utilisateur</string>
+    <string name="userNH">Entrez un nom d\'utilisateur</string>
+    <string name="saveChanges">Enregistrer les modifications</string>
+    <string name="signout">Se déconnecter</string>
+    <string name="saveFail">Échec de la mise à jour du profil.</string>
+
+    <string name="hello_blank_fragment">Fragment vide</string>
+    <string name="join">Rejoindre</string>
+    <string name="title">Titre</string>
+    <string name="add_comment">Ajouter un commentaire...</string>
+    <string name="groupN">Nom du groupe</string>
+
+    <!-- POST -->
+    <string name="post">Publier</string>
+    <string name="upload_picture">Télécharger une image</string>
+    <string name="description">Description</string>
+    <string name="tag">Tags</string>
+    <string name="add_tag">+ Ajouter un tag</string>
+    <string name="address">Adresse</string>
+    <string name="group">Groupe</string>
+    <string name="public_label">Public</string>
+    <string name="private_label">Privé</string>
+
+    <string name="login_required">Veuillez vous connecter pour publier</string>
+    <string name="select_image">Veuillez sélectionner une image</string>
+    <string name="upload_failed">Échec du téléversement</string>
+    <string name="post_success">Publié !</string>
+    <string name="post_failed">Échec de la publication</string>
+
+    <string name="sign_in_like">Connectez-vous pour aimer les publications</string>
+    <string name="no_address_available">Aucune adresse disponible</string>
+    <string name="open_with">Ouvrir avec…</string>
+    <string name="failed_load_post">Échec du chargement du post : </string>
+
+    <string name="no_posts_group">Aucun post dans ce groupe</string>
+    <string name="no_posts_found">Aucun post trouvé</string>
+    <string name="failed_load_posts">Échec du chargement des posts</string>
+    <string name="no_posts_database">Aucun post dans la base de données</string>
+
+    <string name="ai_soon">Suggestion de tags IA bientôt disponible</string>
+    <string name="voice_soon">Entrée vocale bientôt disponible</string>
+    <string name="private_post_group">Les posts privés nécessitent un groupe</string>
+    <string name="url_cant">Impossible d\'obtenir l\'URL de l\'image :</string>
+    <string name="title_required">Le titre est obligatoire</string>
+
+    <!-- POST DETAIL -->
+    <string name="CAPTURED_BY">CAPTURÉ PAR</string>
+    <string name="LOCATION">LIEU</string>
+    <string name="DATE_TAKEN">DATE DE PRISE</string>
+    <string name="POSTED_ON">PUBLIÉ LE</string>
+    <string name="REPORT">Signaler</string>
+    <string name="Loc">Lieu</string>
+
+    <!-- GROUP -->
+    <string name="modify">Modifier</string>
+
+    <!-- TRAVEL PATH -->
+    <string name="activities">Activités</string>
+    <string name="discovery">Découverte</string>
+    <string name="culture">Culture</string>
+    <string name="restaurants">Restauration</string>
+    <string name="disabled">Désactivé</string>
+    <string name="start_location">Point de départ</string>
+    <string name="budget_max">Budget maximum</string>
+    <string name="duration">Durée maximale</string>
+    <string name="effort">Effort</string>
+    <string name="family">Famille</string>
+    <string name="dynamic">Dynamique</string>
+    <string name="weather">Sensibilité météo</string>
+    <string name="heat">Chaleur</string>
+    <string name="cold">Froid</string>
+    <string name="rain">Pluie</string>
+    <string name="mandatory_visit">Visite obligatoire</string>
+    <string name="add_visit">+ ajouter une visite</string>
+    <string name="search">Rechercher</string>
+    <string name="result_list">Résultats de recherche</string>
+    <string name="itinary">Itinéraire</string>
+    <string name="my_mail">titouan.guibertlode@free.fr</string>
+
+    <string name="connect_to_report">Connectez-vous pour signaler le post</string>
+    <string name="already_reported">Vous avez déjà signalé ce post</string>
+    <string name="post_reported">Post signalé</string>
+    <string name="report_fail">Échec du signalement du post, réessayez</string>
+
+    <string name="members">%1$d membres</string>
+    <string name="search_failed">Échec de la recherche : %1$s</string>
+
+    <!-- Comments -->
+    <string name="comment_load_failed">Impossible de charger les commentaires</string>
+    <string name="comment_login_required">Veuillez vous connecter pour commenter</string>
+    <string name="comment_send_failed">Échec de l\'envoi du commentaire</string>
+
+    <!-- Group -->
+    <string name="group_name_required">Le nom du groupe est obligatoire</string>
+    <string name="group_image_upload_failed">Échec du téléversement de l\'image</string>
+    <string name="group_create_failed">Échec de création du groupe : %1$s</string>
+    <string name="group_leave_failed">Échec pour quitter le groupe : %1$s</string>
+    <string name="group_validate_failed">Échec de validation du groupe</string>
+    <string name="group_sign_to_join">Connectez-vous pour rejoindre un groupe</string>
+    <string name="group_join_failed">Échec pour rejoindre le groupe : %1$s</string>
+    <string name="joined_group">Vous avez rejoint %1$s !</string>
+    <string name="already_in_group">Vous êtes déjà dans %1$s</string>
+    <string name="group_load_failed">Échec du chargement des groupes</string>
+    <string name="join_failed">Échec de la connexion : %1$s</string>
+    <string name="left_group">Groupe quitté</string>
+    <string name="find_group">Recherchez votre groupe...</string>
+    <string name="my_groups">Mes groupes</string>
+    <string name="leave_group">Quitter</string>
+    <string name="createGroup">Créer un groupe</string>
+    <string name="groupName">Entrez un nom de groupe</string>
+    <string name="create_group">+ Créer un groupe</string>
+    <string name="group_not_exist">Le groupe n\'existe pas</string>
+
+    <!-- Location -->
+    <string name="location_cant_try_again">Impossible de récupérer votre position. Réessayez.</string>
+    <string name="location_perm_denied">Permission de localisation refusée, impossible de filtrer les posts proches.</string>
+
+    <!-- Notifications -->
+    <string name="notifications">Notifications</string>
+    <string name="notification_sign_in">Connectez-vous pour recevoir des notifications</string>
+    <string name="notification_no">Aucune nouvelle notification</string>
+    <string name="error">Erreur</string>
+    <string name="new_post_in_your_group">Nouveau post dans votre groupe</string>
+
+    <string name="narrative">Récit</string>
+    <string name="comments">Commentaires</string>
+
+</resources>

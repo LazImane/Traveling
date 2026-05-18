@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**TODO : COMMENTS + SIGNALER + LIKES + Open MAP**/
 public class PostdetailFragment extends Fragment {
 
     private static final String ARG_POST_ID = "post_id";
